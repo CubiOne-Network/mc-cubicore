@@ -1,0 +1,4 @@
+name: CubiCore
+version: '1.0-SNAPSHOT'
+main: net.filtastisch.cubiCore.CubiCore
+api-version: '1.21'
