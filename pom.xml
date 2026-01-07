@@ -89,6 +89,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.4.0</version>
+        </dependency>
+        <dependency>
             <groupId>eu.cloudnetservice.cloudnet</groupId>
             <artifactId>bridge-api</artifactId>
             <version>4.0.0-RC15</version>

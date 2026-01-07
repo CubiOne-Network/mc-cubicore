@@ -1,0 +1,8 @@
+database:
+  host: localhost
+  port: 3306
+  database: core
+  user: root
+  password: 'test1234'
+  pool-size: 10
+  table-prefix: "cubi_"
