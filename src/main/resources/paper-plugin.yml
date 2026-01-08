@@ -2,3 +2,13 @@ name: CubiCore
 version: '1.0-SNAPSHOT'
 main: net.filtastisch.cubiCore.CubiCore
 api-version: '1.21'
+dependencies:
+  server:
+    CommandAPI:
+      load: BEFORE
+      required: true
+      join-classpath: true
+    PlaceholderAPI:
+      load: BEFORE
+      required: true
+      join-classpath: true

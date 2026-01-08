@@ -9,21 +9,15 @@ import eu.cloudnetservice.driver.registry.ServiceRegistry;
 public class CloudNetUtils {
 
     public static ServiceRegistry getServiceRegistry() {
-        try (InjectionLayer<Injector> layer = InjectionLayer.ext()){
-            return layer.instance(ServiceRegistry.class);
-        }
+        return InjectionLayer.ext().instance(ServiceRegistry.class);
     }
 
     public static EventManager getEventManager() {
-        try (InjectionLayer<Injector> layer = InjectionLayer.ext()){
-            return layer.instance(EventManager.class);
-        }
+        return InjectionLayer.ext().instance(EventManager.class);
     }
 
     public static NetworkChannel getNetworkChannel() {
-        try (InjectionLayer<Injector> layer = InjectionLayer.ext()){
-            return layer.instance(NetworkChannel.class);
-        }
+        return InjectionLayer.ext().instance(NetworkChannel.class);
     }
 
 }

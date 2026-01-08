@@ -26,7 +26,7 @@ public class ConfigWrapper {
 
 
     public String getJdbcUrl() {
-        return "jdbc:mariadb://" + this.dbHost + ":" + this.dbPort + "/" + this.dbDatabase;
+        return "jdbc:mysql://" + this.dbHost + ":" + this.dbPort + "/" + this.dbDatabase;
     }
 
 }
