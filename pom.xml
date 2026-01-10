@@ -16,6 +16,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>cubione-private</id>
+            <url>https://repo.cubione.net/private</url>
+        </repository>
+    </distributionManagement>
+
+
     <build>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
