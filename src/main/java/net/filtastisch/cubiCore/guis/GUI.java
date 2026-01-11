@@ -26,6 +26,12 @@ public class GUI implements Listener {
     protected Inventory inventory;
     protected ToolbarConfig toolbar;
 
+    public GUI(){
+        this.title = Component.empty();
+        this.rows = 0;
+        this.buttons = new HashMap<>();
+    }
+
     private GUI(Component title, int rows){
         this.rows = rows;
         this.buttons = new HashMap<>();

@@ -1,5 +1,5 @@
 name: CubiCore
-version: '1.0.3'
+version: '1.1.1'
 main: net.filtastisch.cubiCore.CubiCore
 api-version: '1.21'
 dependencies:
