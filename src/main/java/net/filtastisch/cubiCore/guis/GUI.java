@@ -1,5 +1,6 @@
 package net.filtastisch.cubiCore.guis;
 
+import net.filtastisch.cubiCore.utils.SerializerType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -293,10 +294,10 @@ public class GUI implements Listener {
          * Setzt den Titel der GUI mit einem bestimmten Format-Typ.
          *
          * @param title     der Titel als String
-         * @param titleType der {@link TitleType} für die Formatierung
+         * @param titleType der {@link SerializerType} für die Formatierung
          * @return diese Builder-Instanz für Method-Chaining
          */
-        public Builder setTitle(String title, TitleType titleType){
+        public Builder setTitle(String title, SerializerType titleType){
             switch (titleType) {
                 case MINI_MESSAGE -> this.title = MiniMessage.miniMessage().deserialize(title);
                 case PLAIN -> this.title = Component.text(title);
@@ -337,29 +338,6 @@ public class GUI implements Listener {
             if (title == null || rows == 0) return null;
             return new GUI(title, rows);
         }
-
-        /**
-         * Enumeration der unterstützten Titel-Formate.
-         */
-        public enum TitleType {
-            /**
-             * MiniMessage-Format für moderne Text-Formatierung.
-             *
-             * @see MiniMessage
-             */
-            MINI_MESSAGE,
-
-            /**
-             * Legacy-Format mit '&' als Farbcode-Zeichen.
-             */
-            LEGACY_AMPERSAND,
-
-            /**
-             * Einfacher Text ohne Formatierung.
-             */
-            PLAIN
-        }
-
-    }
+            }
 
 }
