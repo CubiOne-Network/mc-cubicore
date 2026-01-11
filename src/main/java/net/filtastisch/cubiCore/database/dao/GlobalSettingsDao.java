@@ -4,10 +4,37 @@ import net.filtastisch.cubiCore.CubiCore;
 
 import java.sql.*;
 
+/**
+ * Data Access Object (DAO) für globale Einstellungen.
+ * <p>
+ * Diese Klasse verwaltet den Datenbankzugriff für die globalen Einstellungen
+ * des CubiCore-Plugins. Sie bietet Methoden zum Erstellen der Tabelle und
+ * zum Laden von Einstellungen aus der Datenbank.
+ * </p>
+ *
+ * @author filtastisch
+ * @version 1.0
+ * @since 1.0
+ */
 public class GlobalSettingsDao {
 
+    /**
+     * Die Instanz des CubiCore-Plugins für den Zugriff auf Konfiguration und Datenbank.
+     */
     private final CubiCore cubiCore = CubiCore.getInstance();
 
+    /**
+     * Erstellt die Tabelle für globale Einstellungen, falls sie nicht existiert.
+     * <p>
+     * Die Tabelle enthält folgende Spalten:
+     * <ul>
+     *     <li>{@code setting_name} - Der Name der Einstellung (Primärschlüssel)</li>
+     *     <li>{@code value} - Der Wert der Einstellung</li>
+     *     <li>{@code last_edited} - Zeitstempel der letzten Änderung (automatisch aktualisiert)</li>
+     * </ul>
+     * Zusätzlich wird ein Standardeintrag für das Chat-Präfix eingefügt.
+     * </p>
+     */
     public void createTable() {
         String prefix = cubiCore.getConfigWrapper().getDbTablePrefix();
 
@@ -31,6 +58,13 @@ public class GlobalSettingsDao {
         }
     }
 
+    /**
+     * Lädt eine globale Einstellung aus der Datenbank.
+     *
+     * @param key der Schlüssel/Name der Einstellung, die geladen werden soll
+     * @return der Wert der Einstellung oder {@code null}, wenn die Einstellung nicht existiert
+     * @throws RuntimeException wenn ein Datenbankfehler auftritt
+     */
     public String loadGlobalSetting(String key) {
         String sql = "SELECT * FROM " +
                 cubiCore.getConfigWrapper().getDbTablePrefix() +
