@@ -101,6 +101,7 @@ public class GUI implements Listener {
         this.rows = rows;
         this.buttons = new HashMap<>();
         this.title = title;
+        this.inventory = Bukkit.createInventory(null, rows * 9, title);
     }
 
     /**
@@ -301,7 +302,7 @@ public class GUI implements Listener {
             switch (titleType) {
                 case MINI_MESSAGE -> this.title = MiniMessage.miniMessage().deserialize(title);
                 case PLAIN -> this.title = Component.text(title);
-                case LEGACY_AMPERSAND -> LegacyComponentSerializer.legacyAmpersand().deserialize(title);
+                case LEGACY_AMPERSAND -> this.title = LegacyComponentSerializer.legacyAmpersand().deserialize(title);
             }
             return this;
         }
