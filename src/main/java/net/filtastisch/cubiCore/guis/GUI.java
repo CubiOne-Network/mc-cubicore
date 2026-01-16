@@ -85,7 +85,7 @@ public class GUI implements Listener {
      * Für die Erstellung funktionaler GUIs sollte der {@link Builder} verwendet werden.
      * </p>
      */
-    public GUI(){
+    GUI(){
         this.title = Component.empty();
         this.rows = 0;
         this.buttons = new HashMap<>();
@@ -205,15 +205,27 @@ public class GUI implements Listener {
     public void onInvClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
+        // Prüfe ob der Spieler eine registrierte GUI offen hat
         GUI gui = openGuis.get(player.getUniqueId());
-        if (gui != this) return;
+        if (gui == null) return;
+
+        // Strikte Inventar-Referenz-Prüfung: Ist das angeklickte Inventar exakt unsere GUI?
+        if (event.getInventory() != gui.inventory) return;
+
+        // Prüfe ob der Klick im oberen Inventar (GUI) stattfand, nicht im Spieler-Inventar
+        if (event.getClickedInventory() == null) return;
+        if (event.getClickedInventory() != gui.inventory) {
+            // Klick war im Spieler-Inventar - trotzdem canceln um Item-Verschiebung zu verhindern
+            event.setCancelled(true);
+            return;
+        }
 
         event.setCancelled(true);
 
         int slot = event.getRawSlot();
-        if (slot < 0 || slot >= inventory.getSize()) return;
+        if (slot < 0 || slot >= gui.inventory.getSize()) return;
 
-        GUIButton button = buttons.get(slot);
+        GUIButton button = gui.buttons.get(slot);
 
         if (button != null && button.hasListener()) {
             button.onClick(event, player);
@@ -245,7 +257,7 @@ public class GUI implements Listener {
      * @param plugin das Plugin, bei dem der Listener registriert werden soll
      */
     public static void registerListener(Plugin plugin) {
-        Bukkit.getPluginManager().registerEvents(new GUI(Component.empty(), 1), plugin);
+        Bukkit.getPluginManager().registerEvents(new GUI(), plugin);
     }
 
     /**
