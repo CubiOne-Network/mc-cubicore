@@ -1,5 +1,9 @@
 package net.filtastisch.cubiCore.utils;
 
+import eu.cloudnetservice.modules.bridge.player.NetworkServiceInfo;
+
+import java.util.UUID;
+
 /**
  * Repräsentiert einen Spieler im CubiCore-System.
  * <p>
@@ -16,4 +20,15 @@ package net.filtastisch.cubiCore.utils;
  * @since 1.0
  */
 public class CubicPlayer {
+    private final UUID uuid;
+
+    public CubicPlayer(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public boolean isModProxy() {
+        NetworkServiceInfo serviceInfo = CloudNetUtils.getOnlinePlayer(this.uuid).networkPlayerProxyInfo().networkService();
+        return serviceInfo.taskName().equals("ModProxy");
+    }
+
 }

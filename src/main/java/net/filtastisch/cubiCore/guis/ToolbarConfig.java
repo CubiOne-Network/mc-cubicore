@@ -59,7 +59,7 @@ public class ToolbarConfig {
      * @return diese ToolbarConfig-Instanz für Method-Chaining
      * @throws IllegalArgumentException wenn die Position außerhalb des Bereichs 0-8 liegt
      */
-    public ToolbarConfig setButtons(int pos, GUIButton button) {
+    public ToolbarConfig setButton(int pos, GUIButton button) {
         if (pos < 0 || pos > 8) {
             throw new IllegalArgumentException("The Button position should be between 0 and 9");
         }
