@@ -1,0 +1,7 @@
+net.filtastisch.cubiCore
+net.filtastisch.cubiCore.commands
+net.filtastisch.cubiCore.database
+net.filtastisch.cubiCore.database.dao
+net.filtastisch.cubiCore.guis
+net.filtastisch.cubiCore.listener
+net.filtastisch.cubiCore.utils

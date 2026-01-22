@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"net.filtastisch.cubiCore"},{"l":"net.filtastisch.cubiCore.commands"},{"l":"net.filtastisch.cubiCore.database"},{"l":"net.filtastisch.cubiCore.database.dao"},{"l":"net.filtastisch.cubiCore.guis"},{"l":"net.filtastisch.cubiCore.listener"},{"l":"net.filtastisch.cubiCore.utils"}];updateSearchResults();
