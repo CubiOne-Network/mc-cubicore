@@ -3,12 +3,11 @@ package net.filtastisch.cubiCore.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 
 /**
- * Befehlsklasse für Hilfe-bezogene Befehle.
+ * Command class for help-related commands.
  * <p>
- * Diese Klasse registriert und verwaltet alle Hilfe-Befehle des CubiCore-Plugins.
- * Die Befehle werden über die CommandAPI registriert und bieten Spielern
- * Informationen zur Verwendung des Plugins.
- * </p>
+ * Registers and manages all help commands for the CubiCore plugin.
+ * Commands are registered via CommandAPI and provide players with
+ * information about plugin usage.
  *
  * @author filtastisch
  * @version 1.0
@@ -17,26 +16,24 @@ import dev.jorel.commandapi.CommandAPICommand;
 public class HelpCommands {
 
     /**
-     * Erstellt eine neue Instanz der HelpCommands-Klasse.
+     * Creates a new HelpCommands instance.
      * <p>
-     * Bei der Instanziierung werden automatisch alle Hilfe-Befehle registriert.
-     * </p>
+     * Automatically registers all help commands upon instantiation.
      */
     public HelpCommands(){
         this.registerHelpCommand();
     }
 
     /**
-     * Registriert den Haupthilfebefehl.
+     * Registers the main help command.
      * <p>
-     * Registriert den {@code /help}-Befehl mit folgenden Eigenschaften:
+     * Registers {@code /help} with the following properties:
      * <ul>
-     *     <li>Befehl: {@code /help}</li>
+     *     <li>Command: {@code /help}</li>
      *     <li>Permission: {@code cubione.command.help}</li>
      *     <li>Namespace: {@code cubione}</li>
-     *     <li>Ausführbar von: Nur Spieler</li>
+     *     <li>Executable by: Players only</li>
      * </ul>
-     * </p>
      */
     private void registerHelpCommand() {
         new CommandAPICommand("help")

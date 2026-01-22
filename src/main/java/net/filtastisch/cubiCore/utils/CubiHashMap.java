@@ -4,23 +4,22 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 
 /**
- * Eine erweiterte HashMap mit konfigurierbarem Standardwert.
+ * Extended HashMap with configurable default value.
  * <p>
- * Diese Klasse erweitert {@link HashMap} und überschreibt die {@link #get(Object)}-Methode,
- * um einen benutzerdefinierten Standardwert zurückzugeben, wenn ein Schlüssel nicht
- * in der Map vorhanden ist. Der Standardwert wird durch einen {@link Supplier} bereitgestellt.
- * </p>
+ * Extends {@link HashMap} and overrides {@link #get(Object)} to return
+ * a custom default value when a key doesn't exist. The default value
+ * is provided by a {@link Supplier}.
  *
- * <p><b>Beispiel:</b></p>
+ * <p><b>Example:</b></p>
  * <pre>{@code
- * CubiHashMap<String, String> map = new CubiHashMap<>(() -> "Nicht gefunden");
+ * CubiHashMap<String, String> map = new CubiHashMap<>(() -> "Not found");
  * map.put("key", "value");
- * String result = map.get("key");        // Gibt "value" zurück
- * String missing = map.get("unknown");   // Gibt "Nicht gefunden" zurück
+ * String result = map.get("key");        // Returns "value"
+ * String missing = map.get("unknown");   // Returns "Not found"
  * }</pre>
  *
- * @param <K> der Typ der Schlüssel in dieser Map
- * @param <V> der Typ der Werte in dieser Map
+ * @param <K> key type
+ * @param <V> value type
  * @author filtastisch
  * @version 1.0
  * @since 1.0
@@ -30,32 +29,28 @@ import java.util.function.Supplier;
 public class CubiHashMap<K, V> extends HashMap<K, V> {
 
     /**
-     * Der Supplier, der den Standardwert liefert, wenn ein Schlüssel nicht existiert.
+     * Supplier providing the default value when a key doesn't exist.
      */
     private final Supplier<V> defaultSupplier;
 
     /**
-     * Erstellt eine neue CubiHashMap mit dem angegebenen Standard-Supplier.
+     * Creates a new CubiHashMap with the specified default supplier.
      *
-     * @param defaultSupplier der {@link Supplier}, der den Standardwert liefert,
-     *                        wenn ein Schlüssel nicht in der Map gefunden wird
+     * @param defaultSupplier the {@link Supplier} providing the default value
+     *                        when a key is not found
      */
     public CubiHashMap(Supplier<V> defaultSupplier) {
         this.defaultSupplier = defaultSupplier;
     }
 
     /**
-     * Gibt den Wert zurück, der dem angegebenen Schlüssel zugeordnet ist,
-     * oder den Standardwert, wenn der Schlüssel nicht existiert.
+     * Returns the value for the specified key, or the default value if the key doesn't exist.
      * <p>
-     * Im Gegensatz zur Standard-{@link HashMap#get(Object)}-Methode, die {@code null}
-     * zurückgibt, wenn ein Schlüssel nicht existiert, gibt diese Methode den Wert
-     * zurück, der vom {@link #defaultSupplier} bereitgestellt wird.
-     * </p>
+     * Unlike standard {@link HashMap#get(Object)} which returns {@code null} for missing keys,
+     * this method returns the value from {@link #defaultSupplier}.
      *
-     * @param key der Schlüssel, dessen zugeordneter Wert zurückgegeben werden soll
-     * @return den dem Schlüssel zugeordneten Wert oder den Standardwert,
-     *         wenn der Schlüssel nicht existiert
+     * @param key the key whose value should be returned
+     * @return the value for the key, or the default value if key doesn't exist
      */
     @Override
     public V get(Object key) {

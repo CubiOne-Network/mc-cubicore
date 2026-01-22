@@ -1,5 +1,7 @@
 package net.filtastisch.cubiCore.guis;
 
+import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,11 +13,12 @@ import java.util.List;
 
 public class PageableGUI extends GUI {
     private final List<GUIButton> items;
+    @Getter
     private int currentPage;
     private final int itemsPerPage;
 
-    public PageableGUI(String title, int rows) {
-        super();
+    public PageableGUI(Component title, int rows) {
+        super(title, rows);
         this.items = new ArrayList<>();
         this.currentPage = 0;
 
@@ -30,10 +33,6 @@ public class PageableGUI extends GUI {
     public PageableGUI addItems(List<GUIButton> buttons) {
         items.addAll(buttons);
         return this;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
     }
 
     public int getTotalPages() {
@@ -63,6 +62,9 @@ public class PageableGUI extends GUI {
 
     private void updatePage() {
         buttons.entrySet().removeIf(entry -> {
+            GUIButton btn = entry.getValue();
+            if (btn.isSticky()) return false;
+
             if (toolbar != null) {
                 int toolbarRow = toolbar.getToolbarRow();
                 int slot = entry.getKey();
@@ -72,6 +74,12 @@ public class PageableGUI extends GUI {
         });
 
         inventory.clear();
+
+        buttons.forEach((slot, btn) -> {
+            if (btn.isSticky()) {
+                inventory.setItem(slot, btn.getIcon());
+            }
+        });
 
         int start = currentPage * itemsPerPage;
         int end = Math.min(start + itemsPerPage, items.size());

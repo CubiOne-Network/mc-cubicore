@@ -5,12 +5,10 @@ import eu.cloudnetservice.driver.event.events.channel.ChannelMessageReceiveEvent
 import net.filtastisch.cubiCore.CubiCore;
 
 /**
- * Listener für CloudNet Channel-Nachrichten.
+ * Listener for CloudNet channel messages.
  * <p>
- * Diese Klasse empfängt und verarbeitet Nachrichten, die über den CloudNet
- * Channel-Messaging-Dienst gesendet werden. Sie ermöglicht die netzwerkweite
- * Kommunikation zwischen verschiedenen Server-Instanzen.
- * </p>
+ * Receives and processes messages sent via CloudNet's channel messaging service,
+ * enabling network-wide communication between server instances.
  *
  * @author filtastisch
  * @version 1.0
@@ -20,15 +18,14 @@ import net.filtastisch.cubiCore.CubiCore;
 public class ChannelMessageListener {
 
     /**
-     * Verarbeitet eingehende Channel-Nachrichten von CloudNet.
+     * Processes incoming CloudNet channel messages.
      * <p>
-     * Reagiert auf Nachrichten im Channel {@code cubicore_global_settings}:
+     * Handles messages on channel {@code cubicore_global_settings}:
      * <ul>
-     *     <li>{@code update_prefix} - Lädt die globalen Einstellungen neu</li>
+     *     <li>{@code update_prefix} - Reloads global settings</li>
      * </ul>
-     * </p>
      *
-     * @param event das Event, das die Channel-Nachricht enthält
+     * @param event the event containing the channel message
      */
     @EventListener
     public void onChannelMessage(ChannelMessageReceiveEvent event) {

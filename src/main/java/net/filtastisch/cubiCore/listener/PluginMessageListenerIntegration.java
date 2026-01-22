@@ -5,16 +5,13 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Listener für Bukkit Plugin-Nachrichten.
+ * Listener for Bukkit plugin messages.
  * <p>
- * Diese Klasse implementiert den {@link PluginMessageListener} und ermöglicht
- * die Kommunikation zwischen dem Server und verbundenen Clients über
- * Plugin-Message-Channels.
- * </p>
+ * Implements {@link PluginMessageListener} to enable communication between
+ * the server and connected clients via plugin message channels.
  * <p>
- * Plugin-Nachrichten werden häufig für die Kommunikation mit Proxy-Servern
- * (wie BungeeCord/Velocity) oder für clientseitige Modifikationen verwendet.
- * </p>
+ * Plugin messages are commonly used for proxy server communication
+ * (BungeeCord/Velocity) or client-side modifications.
  *
  * @author filtastisch
  * @version 1.0
@@ -24,15 +21,13 @@ import org.jetbrains.annotations.NotNull;
 public class PluginMessageListenerIntegration implements PluginMessageListener {
 
     /**
-     * Wird aufgerufen, wenn eine Plugin-Nachricht empfangen wird.
+     * Called when a plugin message is received.
      * <p>
-     * Diese Methode verarbeitet eingehende Plugin-Nachrichten für einen bestimmten
-     * Channel und Spieler.
-     * </p>
+     * Processes incoming plugin messages for a specific channel and player.
      *
-     * @param s      der Name des Channels, über den die Nachricht empfangen wurde
-     * @param player der Spieler, der mit der Nachricht verknüpft ist
-     * @param bytes  die Rohdaten der Nachricht als Byte-Array
+     * @param s      the channel name the message was received on
+     * @param player the player associated with the message
+     * @param bytes  the raw message data as byte array
      */
     @Override
     public void onPluginMessageReceived(@NotNull String s, @NotNull Player player, byte @NotNull [] bytes) {

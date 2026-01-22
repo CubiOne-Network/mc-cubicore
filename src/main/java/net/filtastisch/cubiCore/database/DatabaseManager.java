@@ -9,12 +9,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Manager-Klasse für die Datenbankverwaltung.
+ * Manager class for database connections.
  * <p>
- * Diese Klasse verwaltet die Verbindung zur MySQL-Datenbank unter Verwendung
- * von HikariCP als Connection-Pool. Sie bietet Methoden zum Herstellen und
- * Schließen der Datenbankverbindung sowie zum Abrufen von Connections.
- * </p>
+ * Manages MySQL database connections using HikariCP as the connection pool.
+ * Provides methods for establishing and closing database connections.
  *
  * @author filtastisch
  * @version 1.0
@@ -25,27 +23,20 @@ import java.sql.SQLException;
 public class DatabaseManager {
 
     /**
-     * Die HikariCP-DataSource für den Connection-Pool.
+     * HikariCP DataSource for the connection pool.
      */
     private HikariDataSource dataSource;
 
     /**
-     * Der ConfigWrapper mit den Datenbankeinstellungen.
+     * ConfigWrapper containing database settings.
      */
     private final ConfigWrapper config = CubiCore.getInstance().getConfigWrapper();
 
     /**
-     * Stellt eine Verbindung zur Datenbank her.
+     * Establishes a database connection.
      * <p>
-     * Konfiguriert und initialisiert den HikariCP Connection-Pool mit den
-     * Einstellungen aus der Plugin-Konfiguration:
-     * <ul>
-     *     <li>JDBC-URL</li>
-     *     <li>Benutzername</li>
-     *     <li>Passwort</li>
-     *     <li>Pool-Größe</li>
-     * </ul>
-     * </p>
+     * Configures and initializes the HikariCP connection pool with settings
+     * from the plugin configuration (JDBC URL, username, password, pool size).
      */
     public void connect() {
         HikariConfig hikariConfig = new HikariConfig();
@@ -59,21 +50,19 @@ public class DatabaseManager {
     }
 
     /**
-     * Gibt eine Verbindung aus dem Connection-Pool zurück.
+     * Returns a connection from the connection pool.
      *
-     * @return eine {@link Connection} aus dem Pool
-     * @throws SQLException wenn keine Verbindung hergestellt werden kann
+     * @return a {@link Connection} from the pool
+     * @throws SQLException if a connection cannot be established
      */
     public Connection getConnection() throws SQLException {
         return this.dataSource.getConnection();
     }
 
     /**
-     * Schließt den Connection-Pool und gibt alle Ressourcen frei.
+     * Closes the connection pool and releases all resources.
      * <p>
-     * Diese Methode sollte beim Herunterfahren des Plugins aufgerufen werden,
-     * um alle Datenbankverbindungen ordnungsgemäß zu schließen.
-     * </p>
+     * Should be called when the plugin is disabled to properly close all connections.
      */
     public void shutdown() {
         if (dataSource != null) dataSource.close();

@@ -1,5 +1,6 @@
 package net.filtastisch.cubiCore.guis;
 
+import lombok.Getter;
 import net.filtastisch.cubiCore.utils.SerializerType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -11,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
@@ -18,30 +20,31 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Eine flexible GUI-Klasse für die Erstellung von Inventar-basierten Benutzeroberflächen.
+ * Flexible GUI class for creating inventory-based user interfaces.
  * <p>
- * Diese Klasse ermöglicht das Erstellen, Verwalten und Anzeigen von interaktiven
- * GUI-Inventaren für Spieler. Sie unterstützt:
+ * Allows creating, managing, and displaying interactive GUI inventories for players.
+ * Features include:
  * <ul>
- *     <li>Dynamische Button-Platzierung</li>
- *     <li>Optionale Toolbars</li>
- *     <li>Verschiedene Titel-Formate (Plain, MiniMessage, Legacy)</li>
- *     <li>Event-Handling für Klicks und Schließen</li>
+ *     <li>Dynamic button placement</li>
+ *     <li>Optional toolbars</li>
+ *     <li>Various title formats (Plain, MiniMessage, Legacy)</li>
+ *     <li>Event handling for clicks and closing</li>
+ *     <li>Configurable click cancel types</li>
  * </ul>
- * </p>
  *
- * <p><b>Verwendung mit Builder:</b></p>
+ * <p><b>Builder usage:</b></p>
  * <pre>{@code
  * GUI gui = new GUI.Builder()
- *     .setTitle("Mein Menü")
+ *     .setTitle("My Menu")
  *     .setRows(3)
+ *     .setClickCancelType(ClickCancelType.TOP_INV)
  *     .build();
  * gui.setButton(13, new GUIButton(itemStack));
  * gui.open(player);
  * }</pre>
  *
  * @author filtastisch
- * @version 1.0
+ * @version 2.0
  * @since 1.0
  * @see GUIButton
  * @see ToolbarConfig
@@ -49,66 +52,98 @@ import java.util.UUID;
 public class GUI implements Listener {
 
     /**
-     * Eine Map, die alle aktuell geöffneten GUIs nach Spieler-UUID speichert.
+     * Defines which inventory clicks should be cancelled.
+     */
+    public enum ClickCancelType {
+        /**
+         * Only the clicked slot is cancelled (default).
+         */
+        SLOT,
+
+        /**
+         * All clicks in the top inventory (GUI) are cancelled.
+         */
+        TOP_INV,
+
+        /**
+         * All clicks in the bottom inventory (player inventory) are cancelled.
+         */
+        BOTTOM_INV,
+
+        /**
+         * All clicks in both inventories are cancelled.
+         */
+        FULL_INV
+    }
+
+    /**
+     * Map storing all currently open GUIs by player UUID.
      */
     protected static final Map<UUID, GUI> openGuis = new HashMap<>();
 
     /**
-     * Der Titel der GUI als Adventure-Component.
+     * GUI title as Adventure Component.
      */
     protected final Component title;
 
     /**
-     * Die Anzahl der Reihen in der GUI (1-6).
+     * Number of rows in the GUI (1-6).
      */
     protected final int rows;
 
     /**
-     * Eine Map der Buttons, indiziert nach Slot-Position.
+     * Map of buttons indexed by slot position.
      */
     protected final Map<Integer, GUIButton> buttons;
 
     /**
-     * Das Bukkit-Inventar, das diese GUI repräsentiert.
+     * Bukkit inventory representing this GUI.
      */
     protected Inventory inventory;
 
     /**
-     * Die optionale Toolbar-Konfiguration.
+     * Optional toolbar configuration.
      */
     protected ToolbarConfig toolbar;
 
     /**
-     * Erstellt eine leere GUI-Instanz.
+     * Click cancel type for this GUI.
+     */
+    @Getter
+    protected ClickCancelType clickCancelType;
+
+    /**
+     * Creates an empty GUI instance.
      * <p>
-     * Diese Konstruktor wird hauptsächlich für die Listener-Registrierung verwendet.
-     * Für die Erstellung funktionaler GUIs sollte der {@link Builder} verwendet werden.
-     * </p>
+     * Mainly used for listener registration.
+     * Use {@link Builder} for creating functional GUIs.
      */
     GUI(){
         this.title = Component.empty();
         this.rows = 0;
         this.buttons = new HashMap<>();
+        this.clickCancelType = ClickCancelType.SLOT;
     }
 
     /**
-     * Erstellt eine GUI mit dem angegebenen Titel und der Anzahl der Reihen.
+     * Creates a GUI with the specified title and row count.
      *
-     * @param title der Titel der GUI als {@link Component}
-     * @param rows  die Anzahl der Reihen (1-6)
+     * @param title the GUI title as {@link Component}
+     * @param rows  the number of rows (1-6)
      */
-    private GUI(Component title, int rows){
+    protected GUI(Component title, int rows){
         this.rows = rows;
         this.buttons = new HashMap<>();
         this.title = title;
         this.inventory = Bukkit.createInventory(null, rows * 9, title);
+        this.clickCancelType = ClickCancelType.SLOT;
     }
 
     /**
-     * Fügt eine Toolbar zur GUI hinzu.
+     * Adds a toolbar to the GUI.
      *
-     * @param toolbar die {@link ToolbarConfig} für die GUI
-     * @return diese GUI-Instanz für Method-Chaining
+     * @param toolbar the {@link ToolbarConfig} for the GUI
+     * @return this GUI instance for method chaining
      */
     public GUI withToolbar(ToolbarConfig toolbar) {
         this.toolbar = toolbar;
@@ -116,13 +151,23 @@ public class GUI implements Listener {
     }
 
     /**
-     * Platziert einen Button an der angegebenen Slot-Position.
+     * Sets the click cancel type for this GUI.
      *
-     * @param slot   die Slot-Position (0 bis rows*9-1)
-     * @param button der zu platzierende {@link GUIButton}
-     * @return diese GUI-Instanz für Method-Chaining
-     * @throws IllegalArgumentException wenn der Slot außerhalb des gültigen Bereichs liegt
-     *                                  oder für die Toolbar reserviert ist
+     * @param clickCancelType the {@link ClickCancelType}
+     * @return this GUI instance for method chaining
+     */
+    public GUI setClickCancelType(ClickCancelType clickCancelType) {
+        this.clickCancelType = clickCancelType;
+        return this;
+    }
+
+    /**
+     * Places a button at the specified slot position.
+     *
+     * @param slot   the slot position (0 to rows*9-1)
+     * @param button the {@link GUIButton} to place
+     * @return this GUI instance for method chaining
+     * @throws IllegalArgumentException if the slot is out of range or reserved for toolbar
      */
     public GUI setButton(int slot, GUIButton button) {
         if (slot < 0 || slot >= rows * 9) throw new IllegalArgumentException("Slot should be between 0 and " + (rows * 9 - 1));
@@ -135,10 +180,32 @@ public class GUI implements Listener {
     }
 
     /**
-     * Entfernt einen Button von der angegebenen Slot-Position.
+     * Returns all buttons using the specified ItemStack as icon.
      *
-     * @param slot die Slot-Position, von der der Button entfernt werden soll
-     * @return diese GUI-Instanz für Method-Chaining
+     * @param itemStack the ItemStack to search for
+     * @return array of {@link GUIButton}s using that ItemStack
+     */
+    public GUIButton[] getButtons(ItemStack itemStack) {
+        return buttons.values().stream()
+                .filter(button -> button.getIcon().equals(itemStack))
+                .toArray(GUIButton[]::new);
+    }
+
+    /**
+     * Returns the button at the specified slot position.
+     *
+     * @param slot the slot position
+     * @return the {@link GUIButton} at that position, or {@code null} if empty
+     */
+    public GUIButton getButton(int slot) {
+        return buttons.get(slot);
+    }
+
+    /**
+     * Removes a button from the specified slot position.
+     *
+     * @param slot the slot position to remove the button from
+     * @return this GUI instance for method chaining
      */
     public GUI removeButton(int slot) {
         buttons.remove(slot);
@@ -147,10 +214,9 @@ public class GUI implements Listener {
     }
 
     /**
-     * Rendert die Toolbar in der GUI.
+     * Renders the toolbar in the GUI.
      * <p>
-     * Diese Methode platziert alle Toolbar-Buttons in der konfigurierten Toolbar-Reihe.
-     * </p>
+     * Places all toolbar buttons in the configured toolbar row.
      */
     protected void renderToolbar() {
         if (toolbar != null) {
@@ -167,13 +233,12 @@ public class GUI implements Listener {
     }
 
     /**
-     * Öffnet die GUI für den angegebenen Spieler.
+     * Opens the GUI for the specified player.
      * <p>
-     * Rendert zuerst die Toolbar (falls vorhanden), öffnet dann das Inventar
-     * und registriert die GUI als geöffnet für den Spieler.
-     * </p>
+     * Renders the toolbar (if present), opens the inventory, and registers
+     * this GUI as open for the player.
      *
-     * @param player der Spieler, für den die GUI geöffnet werden soll
+     * @param player the player to open the GUI for
      */
     public void open(Player player) {
         renderToolbar();
@@ -182,10 +247,9 @@ public class GUI implements Listener {
     }
 
     /**
-     * Aktualisiert die GUI durch erneutes Rendern aller Buttons.
+     * Refreshes the GUI by re-rendering all buttons.
      * <p>
-     * Leert das Inventar und platziert alle registrierten Buttons neu.
-     * </p>
+     * Clears the inventory and places all registered buttons again.
      */
     public void refresh() {
         inventory.clear();
@@ -193,52 +257,94 @@ public class GUI implements Listener {
     }
 
     /**
-     * Behandelt Klick-Events im Inventar.
+     * Updates the GUI with new buttons without reopening the inventory.
      * <p>
-     * Verhindert Standard-Inventar-Interaktionen und führt Button-Listener aus,
-     * wenn ein Button angeklickt wurde.
-     * </p>
+     * Replaces all existing buttons with the specified new buttons.
+     * Slots not in the map will be cleared.
+     * Sticky buttons ({@link GUIButton#isSticky()}) are preserved
+     * unless the new button is also sticky.
      *
-     * @param event das {@link InventoryClickEvent}
+     * @param newButtons map of new buttons (slot -> GUIButton)
+     */
+    public void updateGui(Map<Integer, GUIButton> newButtons) {
+        Map<Integer, GUIButton> stickyButtons = new HashMap<>();
+        buttons.forEach((slot, btn) -> {
+            if (btn.isSticky()) {
+                stickyButtons.put(slot, btn);
+            }
+        });
+
+        for (int slot : buttons.keySet()) {
+            if (!newButtons.containsKey(slot) && !stickyButtons.containsKey(slot)) {
+                inventory.setItem(slot, null);
+            }
+        }
+
+        buttons.clear();
+        buttons.putAll(stickyButtons);
+
+        newButtons.forEach((slot, button) -> {
+            if (slot >= 0 && slot < rows * 9) {
+                if (stickyButtons.containsKey(slot) && !button.isSticky()) {
+                    return;
+                }
+                buttons.put(slot, button);
+                inventory.setItem(slot, button.getIcon());
+            }
+        });
+    }
+
+    /**
+     * Handles inventory click events.
+     * <p>
+     * Prevents inventory interactions based on the configured
+     * {@link ClickCancelType} and button settings.
+     *
+     * @param event the {@link InventoryClickEvent}
      */
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        // Prüfe ob der Spieler eine registrierte GUI offen hat
         GUI gui = openGuis.get(player.getUniqueId());
         if (gui == null) return;
 
-        // Strikte Inventar-Referenz-Prüfung: Ist das angeklickte Inventar exakt unsere GUI?
         if (event.getInventory() != gui.inventory) return;
 
-        // Prüfe ob der Klick im oberen Inventar (GUI) stattfand, nicht im Spieler-Inventar
-        if (event.getClickedInventory() == null) return;
-        if (event.getClickedInventory() != gui.inventory) {
-            // Klick war im Spieler-Inventar - trotzdem canceln um Item-Verschiebung zu verhindern
+        boolean isTopInventory = event.getClickedInventory() == gui.inventory;
+        int slot = event.getRawSlot();
+
+        boolean shouldCancel = switch (gui.clickCancelType) {
+            case SLOT -> {
+                if (isTopInventory && slot >= 0 && slot < gui.inventory.getSize()) {
+                    GUIButton button = gui.buttons.get(slot);
+                    yield button != null && button.isCancelClick();
+                }
+                yield false;
+            }
+            case TOP_INV -> isTopInventory;
+            case BOTTOM_INV -> !isTopInventory;
+            case FULL_INV -> true;
+        };
+
+        if (shouldCancel) {
             event.setCancelled(true);
-            return;
         }
 
-        event.setCancelled(true);
-
-        int slot = event.getRawSlot();
-        if (slot < 0 || slot >= gui.inventory.getSize()) return;
-
-        GUIButton button = gui.buttons.get(slot);
-
-        if (button != null && button.hasListener()) {
-            button.onClick(event, player);
+        if (isTopInventory && slot >= 0 && slot < gui.inventory.getSize()) {
+            GUIButton button = gui.buttons.get(slot);
+            if (button != null && button.hasListener()) {
+                button.onClick(event, player);
+            }
         }
     }
 
     /**
-     * Behandelt das Schließen des Inventars.
+     * Handles inventory close events.
      * <p>
-     * Entfernt die GUI aus der Map der geöffneten GUIs.
-     * </p>
+     * Removes the GUI from the open GUIs map.
      *
-     * @param event das {@link InventoryCloseEvent}
+     * @param event the {@link InventoryCloseEvent}
      */
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
@@ -248,44 +354,45 @@ public class GUI implements Listener {
     }
 
     /**
-     * Registriert den GUI-Listener beim angegebenen Plugin.
+     * Registers the GUI listener with the specified plugin.
      * <p>
-     * Diese Methode muss einmal beim Plugin-Start aufgerufen werden,
-     * um die Event-Behandlung für alle GUIs zu aktivieren.
-     * </p>
+     * Must be called once at plugin startup to enable event handling for all GUIs.
      *
-     * @param plugin das Plugin, bei dem der Listener registriert werden soll
+     * @param plugin the plugin to register the listener with
      */
     public static void registerListener(Plugin plugin) {
         Bukkit.getPluginManager().registerEvents(new GUI(), plugin);
     }
 
     /**
-     * Builder-Klasse für die Erstellung von GUI-Instanzen.
+     * Builder class for creating GUI instances.
      * <p>
-     * Ermöglicht die fluide Konfiguration von GUIs mit verschiedenen
-     * Titel-Formaten und Größen.
-     * </p>
+     * Allows fluent configuration of GUIs with various title formats and sizes.
      *
      * @see GUI
      */
     public static class Builder {
 
         /**
-         * Der Titel der GUI als Component.
+         * GUI title as Component.
          */
         protected Component title;
 
         /**
-         * Die Anzahl der Reihen (Standard: 0).
+         * Number of rows (default: 0).
          */
         protected int rows = 0;
 
         /**
-         * Setzt die Anzahl der Reihen für die GUI.
+         * Click cancel type (default: SLOT).
+         */
+        protected ClickCancelType clickCancelType = ClickCancelType.SLOT;
+
+        /**
+         * Sets the number of rows for the GUI.
          *
-         * @param rows die Anzahl der Reihen (1-6)
-         * @return diese Builder-Instanz für Method-Chaining
+         * @param rows the number of rows (1-6)
+         * @return this Builder instance for method chaining
          */
         public Builder setRows(int rows) {
             this.rows = rows;
@@ -293,10 +400,21 @@ public class GUI implements Listener {
         }
 
         /**
-         * Setzt den Titel der GUI als einfachen Text.
+         * Sets the click cancel type for the GUI.
          *
-         * @param title der Titel als String
-         * @return diese Builder-Instanz für Method-Chaining
+         * @param clickCancelType the {@link ClickCancelType}
+         * @return this Builder instance for method chaining
+         */
+        public Builder setClickCancelType(ClickCancelType clickCancelType) {
+            this.clickCancelType = clickCancelType;
+            return this;
+        }
+
+        /**
+         * Sets the GUI title as plain text.
+         *
+         * @param title the title string
+         * @return this Builder instance for method chaining
          */
         public Builder setTitle(String title) {
             this.title = Component.text(title);
@@ -304,11 +422,11 @@ public class GUI implements Listener {
         }
 
         /**
-         * Setzt den Titel der GUI mit einem bestimmten Format-Typ.
+         * Sets the GUI title with a specific format type.
          *
-         * @param title     der Titel als String
-         * @param titleType der {@link SerializerType} für die Formatierung
-         * @return diese Builder-Instanz für Method-Chaining
+         * @param title     the title string
+         * @param titleType the {@link SerializerType} for formatting
+         * @return this Builder instance for method chaining
          */
         public Builder setTitle(String title, SerializerType titleType){
             switch (titleType) {
@@ -320,11 +438,11 @@ public class GUI implements Listener {
         }
 
         /**
-         * Setzt den Titel der GUI mit einem benutzerdefinierten Legacy-Zeichen.
+         * Sets the GUI title with a custom legacy character.
          *
-         * @param title       der Titel als String mit Farbcodes
-         * @param sectionChar das Zeichen für Farbcodes (z.B. '§' oder '&')
-         * @return diese Builder-Instanz für Method-Chaining
+         * @param title       the title string with color codes
+         * @param sectionChar the character for color codes (e.g. '§' or '&')
+         * @return this Builder instance for method chaining
          */
         public Builder setTitle(String title, char sectionChar) {
             this.title = LegacyComponentSerializer.legacy(sectionChar).deserialize(title);
@@ -332,10 +450,10 @@ public class GUI implements Listener {
         }
 
         /**
-         * Setzt den Titel der GUI als Component.
+         * Sets the GUI title as Component.
          *
-         * @param title der Titel als {@link Component}
-         * @return diese Builder-Instanz für Method-Chaining
+         * @param title the title as {@link Component}
+         * @return this Builder instance for method chaining
          */
         public Builder setTitle(Component title) {
             this.title = title;
@@ -343,14 +461,13 @@ public class GUI implements Listener {
         }
 
         /**
-         * Erstellt die GUI mit den konfigurierten Einstellungen.
+         * Builds the GUI with the configured settings.
          *
-         * @return die erstellte {@link GUI} oder {@code null}, wenn Titel oder Reihen nicht gesetzt wurden
+         * @return the created {@link GUI}, or {@code null} if title or rows are not set
          */
         public GUI build() {
             if (title == null || rows == 0) return null;
-            return new GUI(title, rows);
+            return new GUI(title, rows).setClickCancelType(clickCancelType);
         }
-            }
-
+    }
 }

@@ -4,12 +4,11 @@ import lombok.Getter;
 import net.filtastisch.cubiCore.CubiCore;
 
 /**
- * Wrapper-Klasse für die Plugin-Konfiguration.
+ * Wrapper class for plugin configuration.
  * <p>
- * Diese Klasse kapselt den Zugriff auf die Konfigurationsdatei des Plugins
- * und stellt typisierte Getter-Methoden für alle Konfigurationswerte bereit.
- * Hauptsächlich werden Datenbankeinstellungen verwaltet.
- * </p>
+ * Encapsulates access to the plugin's configuration file and provides
+ * typed getter methods for all configuration values.
+ * Primarily manages database settings.
  *
  * @author filtastisch
  * @version 1.0
@@ -18,68 +17,67 @@ import net.filtastisch.cubiCore.CubiCore;
 public class ConfigWrapper {
 
     /**
-     * Die Instanz des CubiCore-Plugins.
+     * CubiCore plugin instance.
      */
     private final CubiCore corePlugin;
 
     /**
-     * Der Hostname der Datenbank.
+     * Database hostname.
      */
     @Getter
     private final String dbHost;
 
     /**
-     * Der Port der Datenbank.
+     * Database port.
      */
     @Getter
     private final String dbPort;
 
     /**
-     * Der Name der Datenbank.
+     * Database name.
      */
     @Getter
     private final String dbDatabase;
 
     /**
-     * Der Benutzername für die Datenbankverbindung.
+     * Database username.
      */
     @Getter
     private final String dbUser;
 
     /**
-     * Das Passwort für die Datenbankverbindung.
+     * Database password.
      */
     @Getter
     private final String dbPassword;
 
     /**
-     * Das Präfix für Datenbanktabellen.
+     * Database table prefix.
      */
     @Getter
     private final String dbTablePrefix;
 
     /**
-     * Die Größe des Datenbank-Connection-Pools.
+     * Database connection pool size.
      */
     @Getter
     private final int dbPoolSize;
 
     /**
-     * Erstellt einen neuen ConfigWrapper und lädt alle Konfigurationswerte.
+     * Creates a new ConfigWrapper and loads all configuration values.
      * <p>
-     * Liest folgende Werte aus der config.yml:
+     * Reads the following values from config.yml:
      * <ul>
-     *     <li>{@code database.host} - Datenbank-Host</li>
-     *     <li>{@code database.port} - Datenbank-Port</li>
-     *     <li>{@code database.database} - Datenbankname</li>
-     *     <li>{@code database.user} - Benutzername</li>
-     *     <li>{@code database.password} - Passwort</li>
-     *     <li>{@code database.table-prefix} - Tabellenpräfix</li>
-     *     <li>{@code database.pool-size} - Pool-Größe</li>
+     *     <li>{@code database.host} - Database host</li>
+     *     <li>{@code database.port} - Database port</li>
+     *     <li>{@code database.database} - Database name</li>
+     *     <li>{@code database.user} - Username</li>
+     *     <li>{@code database.password} - Password</li>
+     *     <li>{@code database.table-prefix} - Table prefix</li>
+     *     <li>{@code database.pool-size} - Pool size</li>
      * </ul>
-     * </p>
      *
-     * @param corePlugin die Instanz des CubiCore-Plugins
+     * @param corePlugin the CubiCore plugin instance
      */
     public ConfigWrapper(CubiCore corePlugin){
         this.corePlugin = corePlugin;
@@ -95,9 +93,9 @@ public class ConfigWrapper {
 
 
     /**
-     * Erstellt die JDBC-URL für die MySQL-Datenbankverbindung.
+     * Builds the JDBC URL for MySQL database connection.
      *
-     * @return die vollständige JDBC-URL im Format {@code jdbc:mysql://host:port/database}
+     * @return the full JDBC URL in format {@code jdbc:mysql://host:port/database}
      */
     public String getJdbcUrl() {
         return "jdbc:mysql://" + this.dbHost + ":" + this.dbPort + "/" + this.dbDatabase;

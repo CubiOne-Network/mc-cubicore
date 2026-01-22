@@ -26,136 +26,132 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
- * Utility-Klasse für CloudNet v4 Operationen.
- * Bietet einfache Zugriffsmethoden für häufig verwendete CloudNet-Funktionen.
+ * Utility class for CloudNet v4 operations.
+ * Provides simple access methods for common CloudNet functions.
  */
 public class CloudNetUtils {
 
-    // ==================== Provider Getter ====================
-
     /**
-     * Gibt den CloudServiceProvider zurück.
-     * @return CloudServiceProvider Instanz
+     * Returns the CloudServiceProvider.
+     * @return CloudServiceProvider instance
      */
     public static CloudServiceProvider getCloudServiceProvider() {
         return InjectionLayer.ext().instance(CloudServiceProvider.class);
     }
 
     /**
-     * Gibt den PlayerManager zurück.
-     * @return PlayerManager Instanz
+     * Returns the PlayerManager.
+     * @return PlayerManager instance
      */
     public static PlayerManager getCloudPlayerManager() {
         return getServiceRegistry().defaultInstance(PlayerManager.class);
     }
 
     /**
-     * Gibt den BridgeServiceHelper zurück.
-     * @return BridgeServiceHelper Instanz
+     * Returns the BridgeServiceHelper.
+     * @return BridgeServiceHelper instance
      */
     public static BridgeServiceHelper getBridgeServiceHelper() {
         return InjectionLayer.ext().instance(BridgeServiceHelper.class);
     }
 
     /**
-     * Gibt den ServiceTaskProvider zurück.
-     * @return ServiceTaskProvider Instanz
+     * Returns the ServiceTaskProvider.
+     * @return ServiceTaskProvider instance
      */
     public static ServiceTaskProvider getCloudServiceTaskProvider() {
         return InjectionLayer.ext().instance(ServiceTaskProvider.class);
     }
 
     /**
-     * Gibt die WrapperConfiguration zurück.
-     * @return WrapperConfiguration Instanz
+     * Returns the WrapperConfiguration.
+     * @return WrapperConfiguration instance
      */
     public static WrapperConfiguration getWrapperConfiguration() {
         return InjectionLayer.ext().instance(WrapperConfiguration.class);
     }
 
     /**
-     * Gibt die ServiceRegistry zurück.
-     * @return ServiceRegistry Instanz
+     * Returns the ServiceRegistry.
+     * @return ServiceRegistry instance
      */
     public static ServiceRegistry getServiceRegistry() {
         return InjectionLayer.ext().instance(ServiceRegistry.class);
     }
 
     /**
-     * Gibt den EventManager zurück.
-     * @return EventManager Instanz
+     * Returns the EventManager.
+     * @return EventManager instance
      */
 
     public static EventManager getEventManager() {
         return InjectionLayer.ext().instance(EventManager.class);
     }
 
-    // ==================== Online Spieler Methoden ====================
-
     /**
-     * Gibt die Anzahl aller online Spieler im Netzwerk zurück.
-     * @return Anzahl der Online-Spieler
+     * Returns the total online player count across the network.
+     * @return online player count
      */
     public static int getGlobalOnlineCount() {
         return getCloudPlayerManager().onlineCount();
     }
 
     /**
-     * Gibt die Anzahl aller online Spieler im Netzwerk asynchron zurück.
-     * @return CompletableFuture mit der Anzahl der Online-Spieler
+     * Returns the total online player count asynchronously.
+     * @return CompletableFuture with online player count
      */
     public static CompletableFuture<Integer> getGlobalOnlineCountAsync() {
         return getCloudPlayerManager().onlineCountAsync();
     }
 
     /**
-     * Gibt die Anzahl aller registrierten Spieler in der Datenbank zurück.
-     * @return Anzahl der registrierten Spieler
+     * Returns the total registered player count from the database.
+     * @return registered player count
      */
     public static long getRegisteredPlayerCount() {
         return getCloudPlayerManager().registeredCount();
     }
 
     /**
-     * Gibt einen Online-Spieler anhand seiner UUID zurück.
-     * @param uuid UUID des Spielers
-     * @return CloudPlayer oder null wenn nicht online
+     * Returns an online player by UUID.
+     * @param uuid player UUID
+     * @return CloudPlayer or null if not online
      */
     public static CloudPlayer getOnlinePlayer(UUID uuid) {
         return getCloudPlayerManager().onlinePlayer(uuid);
     }
 
     /**
-     * Gibt einen Online-Spieler anhand seines Namens zurück.
-     * @param name Name des Spielers
-     * @return CloudPlayer oder null wenn nicht online
+     * Returns an online player by name.
+     * @param name player name
+     * @return CloudPlayer or null if not online
      */
     public static CloudPlayer getOnlinePlayerByName(String name) {
         return getCloudPlayerManager().firstOnlinePlayer(name);
     }
 
     /**
-     * Gibt alle Online-Spieler mit einem bestimmten Namen zurück.
-     * @param name Name der Spieler
-     * @return Liste von CloudPlayern
+     * Returns all online players with a specific name.
+     * @param name player name
+     * @return list of CloudPlayers
      */
     public static List<CloudPlayer> getOnlinePlayersByName(String name) {
         return getCloudPlayerManager().onlinePlayers(name);
     }
 
     /**
-     * Prüft ob ein Spieler online ist.
-     * @param uuid UUID des Spielers
-     * @return true wenn online, sonst false
+     * Checks if a player is online.
+     * @param uuid player UUID
+     * @return true if online, false otherwise
      */
     public static boolean isPlayerOnline(UUID uuid) {
         return getCloudPlayerManager().onlinePlayer(uuid) != null;
     }
 
     /**
-     * Gibt den Namen des Services zurück, mit dem ein Spieler verbunden ist.
-     * @param uuid UUID des Spielers
-     * @return Service-Name oder null wenn nicht online
+     * Returns the service name a player is connected to.
+     * @param uuid player UUID
+     * @return service name or null if not online
      */
     public static String getPlayerConnectedService(UUID uuid) {
         CloudPlayer player = getCloudPlayerManager().onlinePlayer(uuid);
@@ -163,58 +159,54 @@ public class CloudNetUtils {
         return Objects.requireNonNull(player.connectedService()).serverName();
     }
 
-    // ==================== Offline Spieler Methoden ====================
-
     /**
-     * Gibt einen Offline-Spieler anhand seiner UUID zurück.
-     * @param uuid UUID des Spielers
-     * @return CloudOfflinePlayer oder null wenn nicht gefunden
+     * Returns an offline player by UUID.
+     * @param uuid player UUID
+     * @return CloudOfflinePlayer or null if not found
      */
     public static CloudOfflinePlayer getOfflinePlayer(UUID uuid) {
         return getCloudPlayerManager().offlinePlayer(uuid);
     }
 
     /**
-     * Gibt einen Offline-Spieler anhand seines Namens zurück.
-     * @param name Name des Spielers
-     * @return CloudOfflinePlayer oder null wenn nicht gefunden
+     * Returns an offline player by name.
+     * @param name player name
+     * @return CloudOfflinePlayer or null if not found
      */
     public static CloudOfflinePlayer getOfflinePlayerByName(String name) {
         return getCloudPlayerManager().firstOfflinePlayer(name);
     }
 
     /**
-     * Gibt alle Offline-Spieler mit einem bestimmten Namen zurück.
-     * @param name Name der Spieler
-     * @return Liste von CloudOfflinePlayern
+     * Returns all offline players with a specific name.
+     * @param name player name
+     * @return list of CloudOfflinePlayers
      */
     public static List<CloudOfflinePlayer> getOfflinePlayersByName(String name) {
         return getCloudPlayerManager().offlinePlayers(name);
     }
 
-    // ==================== PlayerExecutor Methoden ====================
-
     /**
-     * Gibt den PlayerExecutor für einen bestimmten Spieler zurück.
-     * @param uuid UUID des Spielers
-     * @return PlayerExecutor für den Spieler
+     * Returns the PlayerExecutor for a specific player.
+     * @param uuid player UUID
+     * @return PlayerExecutor for the player
      */
     public static PlayerExecutor getPlayerExecutor(UUID uuid) {
         return getCloudPlayerManager().playerExecutor(uuid);
     }
 
     /**
-     * Gibt den globalen PlayerExecutor zurück, der für alle Spieler gilt.
-     * @return Globaler PlayerExecutor
+     * Returns the global PlayerExecutor for all players.
+     * @return global PlayerExecutor
      */
     public static PlayerExecutor getGlobalPlayerExecutor() {
         return getCloudPlayerManager().globalPlayerExecutor();
     }
 
     /**
-     * Verbindet einen Spieler mit einem bestimmten Service.
-     * @param playerUUID UUID des Spielers
-     * @param targetServiceName Name des Ziel-Services
+     * Connects a player to a specific service.
+     * @param playerUUID player UUID
+     * @param targetServiceName target service name
      */
     public static void connectPlayerToService(UUID playerUUID, String targetServiceName) {
         PlayerManager playerManager = getCloudPlayerManager();
@@ -232,9 +224,9 @@ public class CloudNetUtils {
     }
 
     /**
-     * Verbindet einen Spieler mit einem bestimmten Service.
-     * @param playerUUID UUID des Spielers
-     * @param targetService Ziel-ServiceInfoSnapshot
+     * Connects a player to a specific service.
+     * @param playerUUID player UUID
+     * @param targetService target ServiceInfoSnapshot
      */
     public static void connectPlayerToService(UUID playerUUID, ServiceInfoSnapshot targetService) {
         PlayerManager playerManager = getCloudPlayerManager();
@@ -245,215 +237,211 @@ public class CloudNetUtils {
     }
 
     /**
-     * Verbindet einen Spieler mit einem Service einer bestimmten Task.
-     * @param playerUUID UUID des Spielers
-     * @param taskName Name der Task
-     * @param selectorType Auswahl-Typ für den Service
+     * Connects a player to a service of a specific task.
+     * @param playerUUID player UUID
+     * @param taskName task name
+     * @param selectorType service selector type
      */
     public static void connectPlayerToTask(UUID playerUUID, String taskName, ServerSelectorType selectorType) {
         getCloudPlayerManager().playerExecutor(playerUUID).connectToTask(taskName, selectorType);
     }
 
     /**
-     * Verbindet einen Spieler mit dem am wenigsten gefüllten Service einer Task.
-     * @param playerUUID UUID des Spielers
-     * @param taskName Name der Task
+     * Connects a player to the least populated service of a task.
+     * @param playerUUID player UUID
+     * @param taskName task name
      */
     public static void connectPlayerToTaskLowestPlayers(UUID playerUUID, String taskName) {
         connectPlayerToTask(playerUUID, taskName, ServerSelectorType.LOWEST_PLAYERS);
     }
 
     /**
-     * Verbindet einen Spieler mit einem zufälligen Service einer Task.
-     * @param playerUUID UUID des Spielers
-     * @param taskName Name der Task
+     * Connects a player to a random service of a task.
+     * @param playerUUID player UUID
+     * @param taskName task name
      */
     public static void connectPlayerToTaskRandom(UUID playerUUID, String taskName) {
         connectPlayerToTask(playerUUID, taskName, ServerSelectorType.RANDOM);
     }
 
     /**
-     * Verbindet einen Spieler mit einem Service einer bestimmten Gruppe.
-     * @param playerUUID UUID des Spielers
-     * @param groupName Name der Gruppe
-     * @param selectorType Auswahl-Typ für den Service
+     * Connects a player to a service of a specific group.
+     * @param playerUUID player UUID
+     * @param groupName group name
+     * @param selectorType service selector type
      */
     public static void connectPlayerToGroup(UUID playerUUID, String groupName, ServerSelectorType selectorType) {
         getCloudPlayerManager().playerExecutor(playerUUID).connectToGroup(groupName, selectorType);
     }
 
     /**
-     * Verbindet einen Spieler zum Fallback-Server.
-     * @param playerUUID UUID des Spielers
+     * Connects a player to the fallback server.
+     * @param playerUUID player UUID
      */
     public static void connectPlayerToFallback(UUID playerUUID) {
         getCloudPlayerManager().playerExecutor(playerUUID).connectToFallback();
     }
 
     /**
-     * Kickt einen Spieler mit einer bestimmten Nachricht.
-     * @param playerUUID UUID des Spielers
-     * @param message Kick-Nachricht als Component
+     * Kicks a player with a specific message.
+     * @param playerUUID player UUID
+     * @param message kick message as Component
      */
     public static void kickPlayer(UUID playerUUID, Component message) {
         getCloudPlayerManager().playerExecutor(playerUUID).kick(message);
     }
 
     /**
-     * Kickt alle Spieler im Netzwerk mit einer bestimmten Nachricht.
-     * @param message Kick-Nachricht als Component
+     * Kicks all players in the network with a specific message.
+     * @param message kick message as Component
      */
     public static void kickAllPlayers(Component message) {
         getCloudPlayerManager().globalPlayerExecutor().kick(message);
     }
 
     /**
-     * Sendet eine Chatnachricht an einen Spieler.
-     * @param playerUUID UUID des Spielers
-     * @param message Nachricht als Component
+     * Sends a chat message to a player.
+     * @param playerUUID player UUID
+     * @param message message as Component
      */
     public static void sendMessage(UUID playerUUID, Component message) {
         getCloudPlayerManager().playerExecutor(playerUUID).sendChatMessage(message);
     }
 
     /**
-     * Sendet eine Chatnachricht an alle Spieler im Netzwerk.
-     * @param message Nachricht als Component
+     * Sends a chat message to all players in the network.
+     * @param message message as Component
      */
     public static void sendMessageToAll(Component message) {
         getCloudPlayerManager().globalPlayerExecutor().sendChatMessage(message);
     }
 
     /**
-     * Sendet eine Chatnachricht an alle Spieler mit einer bestimmten Permission.
-     * @param message Nachricht als Component
-     * @param permission Permission die der Spieler haben muss
+     * Sends a chat message to all players with a specific permission.
+     * @param message message as Component
+     * @param permission required permission
      */
     public static void sendMessageToAllWithPermission(Component message, String permission) {
         getCloudPlayerManager().globalPlayerExecutor().sendChatMessage(message, permission);
     }
 
     /**
-     * Sendet einen Title an einen Spieler.
-     * @param playerUUID UUID des Spielers
-     * @param title Title-Objekt
+     * Sends a title to a player.
+     * @param playerUUID player UUID
+     * @param title Title object
      */
     public static void sendTitle(UUID playerUUID, Title title) {
         getCloudPlayerManager().playerExecutor(playerUUID).sendTitle(title);
     }
 
     /**
-     * Sendet einen Title an alle Spieler im Netzwerk.
-     * @param title Title-Objekt
+     * Sends a title to all players in the network.
+     * @param title Title object
      */
     public static void sendTitleToAll(Title title) {
         getCloudPlayerManager().globalPlayerExecutor().sendTitle(title);
     }
 
     /**
-     * Lässt einen Spieler einen Befehl ausführen.
-     * @param playerUUID UUID des Spielers
-     * @param command Befehl ohne führenden Slash
+     * Makes a player execute a command.
+     * @param playerUUID player UUID
+     * @param command command without leading slash
      */
     public static void executeCommand(UUID playerUUID, String command) {
         getCloudPlayerManager().playerExecutor(playerUUID).spoofCommandExecution(command);
     }
 
     /**
-     * Sendet eine Plugin-Message an einen Spieler.
-     * @param playerUUID UUID des Spielers
-     * @param channel Channel der Nachricht
-     * @param data Daten der Nachricht
+     * Sends a plugin message to a player.
+     * @param playerUUID player UUID
+     * @param channel message channel
+     * @param data message data
      */
     public static void sendPluginMessage(UUID playerUUID, String channel, byte[] data) {
         getCloudPlayerManager().playerExecutor(playerUUID).sendPluginMessage(channel, data);
     }
 
-    // ==================== Task Methoden ====================
-
     /**
-     * Gibt eine ServiceTask anhand ihres Namens zurück.
-     * @param name Name der Task
-     * @return ServiceTask oder null wenn nicht gefunden
+     * Returns a ServiceTask by name.
+     * @param name task name
+     * @return ServiceTask or null if not found
      */
     public static ServiceTask getTaskByName(String name) {
         return getCloudServiceTaskProvider().serviceTask(name);
     }
 
     /**
-     * Gibt alle registrierten ServiceTasks zurück.
-     * @return Collection von ServiceTasks
+     * Returns all registered ServiceTasks.
+     * @return collection of ServiceTasks
      */
     public static Collection<ServiceTask> getAllTasks() {
         return getCloudServiceTaskProvider().serviceTasks();
     }
 
     /**
-     * Prüft ob eine Task existiert.
-     * @param name Name der Task
-     * @return true wenn die Task existiert, sonst false
+     * Checks if a task exists.
+     * @param name task name
+     * @return true if the task exists, false otherwise
      */
     public static boolean taskExists(String name) {
         return getCloudServiceTaskProvider().serviceTask(name) != null;
     }
 
-    // ==================== Service Methoden ====================
-
     /**
-     * Gibt alle registrierten Services zurück.
-     * @return Collection von ServiceInfoSnapshots
+     * Returns all registered services.
+     * @return collection of ServiceInfoSnapshots
      */
     public static Collection<ServiceInfoSnapshot> getAllServices() {
         return getCloudServiceProvider().services();
     }
 
     /**
-     * Gibt alle laufenden Services zurück.
-     * @return Collection von ServiceInfoSnapshots
+     * Returns all running services.
+     * @return collection of ServiceInfoSnapshots
      */
     public static Collection<ServiceInfoSnapshot> getRunningServices() {
         return getCloudServiceProvider().runningServices();
     }
 
     /**
-     * Gibt alle Services einer bestimmten Task zurück.
-     * @param taskName Name der Task
-     * @return Collection von ServiceInfoSnapshots
+     * Returns all services of a specific task.
+     * @param taskName task name
+     * @return collection of ServiceInfoSnapshots
      */
     public static Collection<ServiceInfoSnapshot> getServicesByTask(String taskName) {
         return getCloudServiceProvider().servicesByTask(taskName);
     }
 
     /**
-     * Gibt alle Services einer bestimmten Gruppe zurück.
-     * @param groupName Name der Gruppe
-     * @return Collection von ServiceInfoSnapshots
+     * Returns all services of a specific group.
+     * @param groupName group name
+     * @return collection of ServiceInfoSnapshots
      */
     public static Collection<ServiceInfoSnapshot> getServicesByGroup(String groupName) {
         return getCloudServiceProvider().servicesByGroup(groupName);
     }
 
     /**
-     * Gibt einen Service anhand seines Namens zurück.
-     * @param name Name des Services
-     * @return ServiceInfoSnapshot oder null wenn nicht gefunden
+     * Returns a service by name.
+     * @param name service name
+     * @return ServiceInfoSnapshot or null if not found
      */
     public static ServiceInfoSnapshot getServiceByName(String name) {
         return getCloudServiceProvider().serviceByName(name);
     }
 
     /**
-     * Gibt einen Service anhand seiner UUID zurück.
-     * @param uuid UUID des Services
-     * @return ServiceInfoSnapshot oder null wenn nicht gefunden
+     * Returns a service by UUID.
+     * @param uuid service UUID
+     * @return ServiceInfoSnapshot or null if not found
      */
     public static ServiceInfoSnapshot getServiceByUUID(UUID uuid) {
         return getCloudServiceProvider().service(uuid);
     }
 
     /**
-     * Gibt einen SpecificCloudServiceProvider für einen Service anhand seines Namens zurück.
-     * @param name Name des Services
+     * Returns a SpecificCloudServiceProvider for a service by name.
+     * @param name service name
      * @return SpecificCloudServiceProvider
      */
     public static SpecificCloudServiceProvider getSpecificServiceProvider(String name) {
@@ -461,8 +449,8 @@ public class CloudNetUtils {
     }
 
     /**
-     * Gibt einen SpecificCloudServiceProvider für einen Service anhand seiner UUID zurück.
-     * @param uuid UUID des Services
+     * Returns a SpecificCloudServiceProvider for a service by UUID.
+     * @param uuid service UUID
      * @return SpecificCloudServiceProvider
      */
     public static SpecificCloudServiceProvider getSpecificServiceProvider(UUID uuid) {
@@ -470,71 +458,69 @@ public class CloudNetUtils {
     }
 
     /**
-     * Gibt die Gesamtanzahl aller registrierten Services zurück.
-     * @return Anzahl der Services
+     * Returns the total count of all registered services.
+     * @return service count
      */
     public static int getServiceCount() {
         return getCloudServiceProvider().serviceCount();
     }
 
     /**
-     * Gibt die Anzahl der Services einer bestimmten Task zurück.
-     * @param taskName Name der Task
-     * @return Anzahl der Services
+     * Returns the service count of a specific task.
+     * @param taskName task name
+     * @return service count
      */
     public static int getServiceCountByTask(String taskName) {
         return getCloudServiceProvider().serviceCountByTask(taskName);
     }
 
     /**
-     * Gibt die Anzahl der Services einer bestimmten Gruppe zurück.
-     * @param groupName Name der Gruppe
-     * @return Anzahl der Services
+     * Returns the service count of a specific group.
+     * @param groupName group name
+     * @return service count
      */
     public static int getServiceCountByGroup(String groupName) {
         return getCloudServiceProvider().serviceCountByGroup(groupName);
     }
 
-    // ==================== Service Status Methoden ====================
-
     /**
-     * Prüft ob ein Service leer ist (keine Spieler).
+     * Checks if a service is empty (no players).
      * @param service ServiceInfoSnapshot
-     * @return true wenn leer, sonst false
+     * @return true if empty, false otherwise
      */
     public static boolean isServiceEmpty(ServiceInfoSnapshot service) {
         return BridgeServiceHelper.emptyService(service);
     }
 
     /**
-     * Prüft ob ein Service voll ist.
+     * Checks if a service is full.
      * @param service ServiceInfoSnapshot
-     * @return true wenn voll, sonst false
+     * @return true if full, false otherwise
      */
     public static boolean isServiceFull(ServiceInfoSnapshot service) {
         return BridgeServiceHelper.fullService(service);
     }
 
     /**
-     * Prüft ob ein Service gerade startet.
+     * Checks if a service is starting.
      * @param service ServiceInfoSnapshot
-     * @return true wenn startend, sonst false
+     * @return true if starting, false otherwise
      */
     public static boolean isServiceStarting(ServiceInfoSnapshot service) {
         return BridgeServiceHelper.startingService(service);
     }
 
     /**
-     * Prüft ob ein Service im InGame-Modus ist.
+     * Checks if a service is in-game mode.
      * @param service ServiceInfoSnapshot
-     * @return true wenn InGame, sonst false
+     * @return true if in-game, false otherwise
      */
     public static boolean isServiceInGame(ServiceInfoSnapshot service) {
         return BridgeServiceHelper.inGameService(service);
     }
 
     /**
-     * Gibt den geschätzten Service-Status zurück.
+     * Returns the estimated service state.
      * @param service ServiceInfoSnapshot
      * @return ServiceInfoState
      */
@@ -542,87 +528,83 @@ public class CloudNetUtils {
         return BridgeServiceHelper.guessStateFromServiceInfoSnapshot(service);
     }
 
-    // ==================== Service Properties Methoden ====================
-
     /**
-     * Gibt die Anzahl der online Spieler auf einem Service zurück.
+     * Returns the online player count on a service.
      * @param service ServiceInfoSnapshot
-     * @return Anzahl der Spieler oder 0 wenn nicht verfügbar
+     * @return player count or 0 if unavailable
      */
     public static int getOnlineCountOnService(ServiceInfoSnapshot service) {
         return service.readPropertyOrDefault(BridgeDocProperties.ONLINE_COUNT, 0);
     }
 
     /**
-     * Gibt die maximale Spieleranzahl auf einem Service zurück.
+     * Returns the max player count on a service.
      * @param service ServiceInfoSnapshot
-     * @return Maximale Spieleranzahl oder 0 wenn nicht verfügbar
+     * @return max player count or 0 if unavailable
      */
     public static int getMaxPlayersOnService(ServiceInfoSnapshot service) {
         return service.readPropertyOrDefault(BridgeDocProperties.MAX_PLAYERS, 0);
     }
 
     /**
-     * Gibt die MOTD eines Services zurück.
+     * Returns the MOTD of a service.
      * @param service ServiceInfoSnapshot
-     * @return MOTD oder null wenn nicht verfügbar
+     * @return MOTD or null if unavailable
      */
     public static String getMotdOnService(ServiceInfoSnapshot service) {
         return service.readProperty(BridgeDocProperties.MOTD);
     }
 
     /**
-     * Gibt den Status eines Services zurück.
+     * Returns the state of a service.
      * @param service ServiceInfoSnapshot
-     * @return Status oder null wenn nicht verfügbar
+     * @return state or null if unavailable
      */
     public static String getStateOnService(ServiceInfoSnapshot service) {
         return service.readProperty(BridgeDocProperties.STATE);
     }
 
     /**
-     * Gibt den Extra-Wert eines Services zurück.
+     * Returns the extra value of a service.
      * @param service ServiceInfoSnapshot
-     * @return Extra-Wert oder null wenn nicht verfügbar
+     * @return extra value or null if unavailable
      */
     public static String getExtraOnService(ServiceInfoSnapshot service) {
         return service.readProperty(BridgeDocProperties.EXTRA);
     }
 
     /**
-     * Gibt die Version eines Services zurück.
+     * Returns the version of a service.
      * @param service ServiceInfoSnapshot
-     * @return Version oder null wenn nicht verfügbar
+     * @return version or null if unavailable
      */
     public static String getVersionOnService(ServiceInfoSnapshot service) {
         return service.readProperty(BridgeDocProperties.VERSION);
     }
 
     /**
-     * Prüft ob ein Service online (vollständig gestartet) ist.
+     * Checks if a service is online (fully started).
      * @param service ServiceInfoSnapshot
-     * @return true wenn online, sonst false
+     * @return true if online, false otherwise
      */
     public static boolean isServiceOnline(ServiceInfoSnapshot service) {
         return service.readPropertyOrDefault(BridgeDocProperties.IS_ONLINE, false);
     }
 
     /**
-     * Gibt alle Spieler auf einem Service zurück.
+     * Returns all players on a service.
      * @param service ServiceInfoSnapshot
-     * @return Collection von ServicePlayern oder leere Collection
+     * @return collection of ServicePlayers or empty collection
      */
     public static Collection<ServicePlayer> getPlayersOnService(ServiceInfoSnapshot service) {
         Collection<ServicePlayer> players = service.readProperty(BridgeDocProperties.PLAYERS);
         return players != null ? players : Collections.emptyList();
     }
 
-    // ==================== Aggregierte Spielerzahl Methoden ====================
-
     /**
-     * Gibt die Gesamtzahl der Spieler auf allen Services einer Task zurück.
-     * @param taskName Name der Task
-     * @return Gesamtzahl der Spieler
+     * Returns the total player count across all services of a task.
+     * @param taskName task name
+     * @return total player count
      */
     public static int getPlayerCountByTask(String taskName) {
         AtomicInteger count = new AtomicInteger(0);
@@ -632,9 +614,9 @@ public class CloudNetUtils {
     }
 
     /**
-     * Gibt die maximale Spielerkapazität aller Services einer Task zurück.
-     * @param taskName Name der Task
-     * @return Maximale Spielerkapazität
+     * Returns the max player capacity across all services of a task.
+     * @param taskName task name
+     * @return max player capacity
      */
     public static int getMaxPlayersByTask(String taskName) {
         AtomicInteger count = new AtomicInteger(0);
@@ -644,9 +626,9 @@ public class CloudNetUtils {
     }
 
     /**
-     * Gibt die Gesamtzahl der Spieler auf allen Services einer Gruppe zurück.
-     * @param groupName Name der Gruppe
-     * @return Gesamtzahl der Spieler
+     * Returns the total player count across all services of a group.
+     * @param groupName group name
+     * @return total player count
      */
     public static int getPlayerCountByGroup(String groupName) {
         AtomicInteger count = new AtomicInteger(0);
@@ -656,9 +638,9 @@ public class CloudNetUtils {
     }
 
     /**
-     * Gibt die maximale Spielerkapazität aller Services einer Gruppe zurück.
-     * @param groupName Name der Gruppe
-     * @return Maximale Spielerkapazität
+     * Returns the max player capacity across all services of a group.
+     * @param groupName group name
+     * @return max player capacity
      */
     public static int getMaxPlayersByGroup(String groupName) {
         AtomicInteger count = new AtomicInteger(0);
@@ -667,125 +649,121 @@ public class CloudNetUtils {
         return count.get();
     }
 
-    // ==================== Bridge Service Helper Methoden ====================
-
     /**
-     * Setzt den aktuellen Service auf InGame-Modus und startet automatisch einen neuen Service.
+     * Sets the current service to in-game mode and auto-starts a new service.
      */
     public static void changeToIngame() {
         getBridgeServiceHelper().changeToIngame();
     }
 
     /**
-     * Setzt den aktuellen Service auf InGame-Modus.
-     * @param autoStartService true wenn automatisch ein neuer Service gestartet werden soll
+     * Sets the current service to in-game mode.
+     * @param autoStartService true to auto-start a new service
      */
     public static void changeToIngame(boolean autoStartService) {
         getBridgeServiceHelper().changeToIngame(autoStartService);
     }
 
     /**
-     * Setzt die MOTD des aktuellen Services.
-     * @param motd Neue MOTD
+     * Sets the MOTD of the current service.
+     * @param motd new MOTD
      */
     public static void setMotd(String motd) {
         getBridgeServiceHelper().motd().set(motd);
     }
 
     /**
-     * Gibt die MOTD des aktuellen Services zurück.
-     * @return Aktuelle MOTD
+     * Returns the MOTD of the current service.
+     * @return current MOTD
      */
     public static String getMotd() {
         return getBridgeServiceHelper().motd().get();
     }
 
     /**
-     * Setzt den Status des aktuellen Services.
-     * @param state Neuer Status
+     * Sets the state of the current service.
+     * @param state new state
      */
     public static void setState(String state) {
         getBridgeServiceHelper().state().set(state);
     }
 
     /**
-     * Gibt den Status des aktuellen Services zurück.
-     * @return Aktueller Status
+     * Returns the state of the current service.
+     * @return current state
      */
     public static String getState() {
         return getBridgeServiceHelper().state().get();
     }
 
     /**
-     * Setzt den Extra-Wert des aktuellen Services.
-     * @param extra Neuer Extra-Wert
+     * Sets the extra value of the current service.
+     * @param extra new extra value
      */
     public static void setExtra(String extra) {
         getBridgeServiceHelper().extra().set(extra);
     }
 
     /**
-     * Gibt den Extra-Wert des aktuellen Services zurück.
-     * @return Aktueller Extra-Wert
+     * Returns the extra value of the current service.
+     * @return current extra value
      */
     public static String getExtra() {
         return getBridgeServiceHelper().extra().get();
     }
 
     /**
-     * Setzt die maximale Spieleranzahl des aktuellen Services.
-     * @param maxPlayers Maximale Spieleranzahl
+     * Sets the max player count of the current service.
+     * @param maxPlayers max player count
      */
     public static void setMaxPlayers(int maxPlayers) {
         getBridgeServiceHelper().maxPlayers().set(maxPlayers);
     }
 
     /**
-     * Gibt die maximale Spieleranzahl des aktuellen Services zurück.
-     * @return Maximale Spieleranzahl
+     * Returns the max player count of the current service.
+     * @return max player count
      */
     public static int getMaxPlayers() {
         return getBridgeServiceHelper().maxPlayers().get();
     }
 
-    // ==================== Utility Methoden ====================
-
     /**
-     * Gibt den aktuellen Service-Namen zurück.
-     * @return Name des aktuellen Services
+     * Returns the current service name.
+     * @return current service name
      */
     public static String getCurrentServiceName() {
         return getWrapperConfiguration().serviceConfiguration().serviceId().name();
     }
 
     /**
-     * Gibt die Task-ID des aktuellen Services zurück.
-     * @return Task-ID
+     * Returns the task service ID of the current service.
+     * @return task service ID
      */
     public static int getCurrentTaskServiceId() {
         return getWrapperConfiguration().serviceConfiguration().serviceId().taskServiceId();
     }
 
     /**
-     * Gibt den Task-Namen des aktuellen Services zurück.
-     * @return Task-Name
+     * Returns the task name of the current service.
+     * @return task name
      */
     public static String getCurrentTaskName() {
         return getWrapperConfiguration().serviceConfiguration().serviceId().taskName();
     }
 
     /**
-     * Gibt die UUID des aktuellen Services zurück.
-     * @return Service-UUID
+     * Returns the UUID of the current service.
+     * @return service UUID
      */
     public static UUID getCurrentServiceUUID() {
         return getWrapperConfiguration().serviceConfiguration().serviceId().uniqueId();
     }
 
     /**
-     * Findet den Service mit den wenigsten Spielern einer bestimmten Task.
-     * @param taskName Name der Task
-     * @return ServiceInfoSnapshot mit den wenigsten Spielern oder null
+     * Finds the service with the fewest players of a specific task.
+     * @param taskName task name
+     * @return ServiceInfoSnapshot with fewest players, or null
      */
     public static ServiceInfoSnapshot findLowestPlayerService(String taskName) {
         return getCloudServiceProvider().servicesByTask(taskName).stream()
@@ -795,9 +773,9 @@ public class CloudNetUtils {
     }
 
     /**
-     * Findet einen zufälligen verfügbaren Service einer bestimmten Task.
-     * @param taskName Name der Task
-     * @return ServiceInfoSnapshot oder null
+     * Finds a random available service of a specific task.
+     * @param taskName task name
+     * @return ServiceInfoSnapshot or null
      */
     public static ServiceInfoSnapshot findRandomAvailableService(String taskName) {
         List<ServiceInfoSnapshot> available = getCloudServiceProvider().servicesByTask(taskName).stream()
@@ -808,9 +786,9 @@ public class CloudNetUtils {
     }
 
     /**
-     * Gibt alle verfügbaren (online, nicht InGame, nicht voll) Services einer Task zurück.
-     * @param taskName Name der Task
-     * @return Liste von verfügbaren Services
+     * Returns all available (online, not in-game, not full) services of a task.
+     * @param taskName task name
+     * @return list of available services
      */
     public static List<ServiceInfoSnapshot> getAvailableServices(String taskName) {
         return getCloudServiceProvider().servicesByTask(taskName).stream()
@@ -819,29 +797,29 @@ public class CloudNetUtils {
     }
 
     /**
-     * Gibt alle Spieler auf einem Task-Provider zurück.
-     * @param taskName Name der Task
-     * @return PlayerProvider für die Task
+     * Returns all online players on a task.
+     * @param taskName task name
+     * @return list of CloudPlayers
      */
     public static List<CloudPlayer> getOnlinePlayersOnTask(String taskName) {
         return new ArrayList<>(getCloudPlayerManager().taskOnlinePlayers(taskName).players());
     }
 
     /**
-     * Gibt alle Spieler auf einer Gruppe zurück.
-     * @param groupName Name der Gruppe
-     * @return Liste von CloudPlayern
+     * Returns all online players on a group.
+     * @param groupName group name
+     * @return list of CloudPlayers
      */
     public static List<CloudPlayer> getOnlinePlayersOnGroup(String groupName) {
         return new ArrayList<>(getCloudPlayerManager().groupOnlinePlayers(groupName).players());
     }
 
     /**
-     * Ersetzt Platzhalter in einem String mit Service-Informationen.
-     * @param value Der String mit Platzhaltern
-     * @param group Die Gruppe (kann null sein)
-     * @param service Der Service (kann null sein)
-     * @return Der String mit ersetzten Platzhaltern
+     * Replaces placeholders in a string with service information.
+     * @param value string with placeholders
+     * @param group group (can be null)
+     * @param service service (can be null)
+     * @return string with replaced placeholders
      */
     public static String fillPlaceholders(String value, String group, ServiceInfoSnapshot service) {
         return BridgeServiceHelper.fillCommonPlaceholders(value, group, service);

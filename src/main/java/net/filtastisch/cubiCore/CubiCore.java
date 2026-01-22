@@ -15,12 +15,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Map;
 
 /**
- * Hauptklasse des CubiCore-Plugins.
+ * Main class of the CubiCore plugin.
  * <p>
- * Diese Klasse ist der zentrale Einstiegspunkt für das CubiCore-Plugin und erweitert {@link JavaPlugin}.
- * Sie verwaltet die Initialisierung aller Plugin-Komponenten, einschließlich Datenbankverbindungen,
- * Konfigurationen, Befehle und Event-Listener.
- * </p>
+ * Entry point for the CubiCore plugin, extending {@link JavaPlugin}.
+ * Handles initialization of all plugin components including database connections,
+ * configuration, commands, and event listeners.
  *
  * @author filtastisch
  * @version 1.0
@@ -29,50 +28,48 @@ import java.util.Map;
 public final class CubiCore extends JavaPlugin {
 
     /**
-     * Die Singleton-Instanz des CubiCore-Plugins.
+     * Singleton instance of the CubiCore plugin.
      */
     @Getter
     private static CubiCore instance;
 
     /**
-     * Der Wrapper für die Plugin-Konfiguration.
+     * Wrapper for plugin configuration.
      */
     @Getter
     private ConfigWrapper configWrapper;
 
     /**
-     * Der Manager für Datenbankverbindungen.
+     * Manager for database connections.
      */
     @Getter
     private DatabaseManager databaseManager;
 
     /**
-     * Das Data Access Object für globale Einstellungen.
+     * DAO for global settings.
      */
     @Getter
     private GlobalSettingsDao globalSettingsDao;
 
     /**
-     * Eine Map, die globale Einstellungen speichert.
-     * Verwendet {@link CubiHashMap} mit einem Standard-Fallback-Wert.
+     * Map storing global settings with a default fallback value.
      */
     @Getter
     private final Map<String, String> globalSettings = new CubiHashMap<>(() -> "Dieser Wert existiert nicht!");
 
     /**
-     * Wird beim Aktivieren des Plugins aufgerufen.
+     * Called when the plugin is enabled.
      * <p>
-     * Initialisiert alle Plugin-Komponenten in folgender Reihenfolge:
+     * Initializes all plugin components in the following order:
      * <ol>
-     *     <li>Setzt die Singleton-Instanz</li>
-     *     <li>Registriert APIs (CommandAPI)</li>
-     *     <li>Registriert Befehle</li>
-     *     <li>Speichert die Standard-Konfiguration</li>
-     *     <li>Registriert Utility-Klassen</li>
-     *     <li>Führt Datenbank-Setup durch</li>
-     *     <li>Lädt globale Einstellungen</li>
+     *     <li>Sets the singleton instance</li>
+     *     <li>Registers APIs (CommandAPI)</li>
+     *     <li>Registers commands</li>
+     *     <li>Saves default configuration</li>
+     *     <li>Registers utility classes</li>
+     *     <li>Performs database setup</li>
+     *     <li>Loads global settings</li>
      * </ol>
-     * </p>
      */
     @Override
     public void onEnable() {
@@ -86,14 +83,9 @@ public final class CubiCore extends JavaPlugin {
     }
 
     /**
-     * Wird beim Deaktivieren des Plugins aufgerufen.
+     * Called when the plugin is disabled.
      * <p>
-     * Führt Aufräumarbeiten durch:
-     * <ul>
-     *     <li>Deaktiviert die CommandAPI</li>
-     *     <li>Schließt die Datenbankverbindung</li>
-     * </ul>
-     * </p>
+     * Performs cleanup by disabling CommandAPI and closing database connections.
      */
     @Override
     public void onDisable() {
@@ -102,11 +94,10 @@ public final class CubiCore extends JavaPlugin {
     }
 
     /**
-     * Registriert alle Utility-Klassen und Manager.
+     * Registers all utility classes and managers.
      * <p>
-     * Initialisiert den {@link ConfigWrapper}, den {@link DatabaseManager}
-     * und registriert den {@link ChannelMessageListener} bei CloudNet.
-     * </p>
+     * Initializes {@link ConfigWrapper}, {@link DatabaseManager},
+     * and registers {@link ChannelMessageListener} with CloudNet.
      */
     private void registerUtils() {
         this.configWrapper = new ConfigWrapper(this);
@@ -116,10 +107,9 @@ public final class CubiCore extends JavaPlugin {
     }
 
     /**
-     * Führt alle datenbankbezogenen Initialisierungen durch.
+     * Performs database-related initialization.
      * <p>
-     * Erstellt das {@link GlobalSettingsDao} und legt die erforderlichen Tabellen an.
-     * </p>
+     * Creates {@link GlobalSettingsDao} and sets up required tables.
      */
     private void doDatabaseStuff() {
         this.globalSettingsDao = new GlobalSettingsDao();
@@ -127,31 +117,27 @@ public final class CubiCore extends JavaPlugin {
     }
 
     /**
-     * Lädt oder aktualisiert die globalen Einstellungen aus der Datenbank.
+     * Loads or refreshes global settings from the database.
      * <p>
-     * Diese Methode wird beim Start aufgerufen und kann auch zur Laufzeit
-     * verwendet werden, um Einstellungen neu zu laden (z.B. nach einer Änderung).
-     * </p>
+     * Called at startup and can be used at runtime to reload settings after changes.
      */
     public void loadOrUpdateSettings() {
         this.globalSettings.put(GlobalSettings.CHAT_PREFIX, this.globalSettingsDao.loadGlobalSetting(GlobalSettings.CHAT_PREFIX));
     }
 
     /**
-     * Registriert alle externen APIs, die vom Plugin verwendet werden.
+     * Registers external APIs used by the plugin.
      * <p>
-     * Aktiviert die CommandAPI für die Befehlsregistrierung.
-     * </p>
+     * Enables CommandAPI for command registration.
      */
     private void registerApis() {
         CommandAPI.onEnable();
     }
 
     /**
-     * Registriert alle Plugin-Befehle.
+     * Registers all plugin commands.
      * <p>
-     * Erstellt Instanzen aller Befehlsklassen wie {@link HelpCommands}.
-     * </p>
+     * Creates instances of all command classes like {@link HelpCommands}.
      */
     private void registerCommands() {
         new HelpCommands();

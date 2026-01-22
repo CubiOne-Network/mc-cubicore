@@ -5,15 +5,12 @@ import eu.cloudnetservice.modules.bridge.player.NetworkServiceInfo;
 import java.util.UUID;
 
 /**
- * Repräsentiert einen Spieler im CubiCore-System.
+ * Represents a player in the CubiCore system.
  * <p>
- * Diese Klasse dient als Wrapper für Spieler-Daten und bietet
- * erweiterte Funktionalitäten für die Spielerverwaltung im
- * CubiCore-Plugin.
- * </p>
+ * Wrapper for player data providing extended functionality
+ * for player management in the CubiCore plugin.
  * <p>
- * <b>Hinweis:</b> Diese Klasse befindet sich noch in der Entwicklung.
- * </p>
+ * <b>Note:</b> This class is still in development.
  *
  * @author filtastisch
  * @version 1.0
