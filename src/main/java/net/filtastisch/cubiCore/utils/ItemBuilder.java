@@ -111,7 +111,7 @@ public class ItemBuilder {
     /**
      * Sets the display name with a custom legacy character.
      * @param name the name with color codes
-     * @param sectionChar the color code character (e.g. '§' or '&')
+     * @param sectionChar the color code character (e.g. '§' or '&amp;')
      * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setDisplayName(String name, char sectionChar) {
