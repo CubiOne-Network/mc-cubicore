@@ -1,14 +1,12 @@
 package net.filtastisch.cubiCore.utils;
 
 /**
- * Konstanten-Klasse für globale Einstellungsschlüssel.
+ * Constants class for global setting keys.
  * <p>
- * Diese Klasse enthält statische Konstanten, die als Schlüssel für
- * den Zugriff auf globale Einstellungen in der Datenbank und der
- * {@code globalSettings}-Map verwendet werden.
- * </p>
+ * Contains static constants used as keys for accessing global settings
+ * in the database and the {@code globalSettings} map.
  *
- * <p><b>Verwendung:</b></p>
+ * <p><b>Usage:</b></p>
  * <pre>{@code
  * String prefix = cubiCore.getGlobalSettings().get(GlobalSettings.CHAT_PREFIX);
  * }</pre>
@@ -21,11 +19,9 @@ package net.filtastisch.cubiCore.utils;
 public class GlobalSettings {
 
     /**
-     * Der Schlüssel für das Chat-Präfix.
+     * Key for the chat prefix.
      * <p>
-     * Dieser Wert wird verwendet, um das Präfix abzurufen, das vor
-     * Chat-Nachrichten des Plugins angezeigt wird.
-     * </p>
+     * Used to retrieve the prefix displayed before plugin chat messages.
      */
     public static String CHAT_PREFIX = "chat_prefix";
 

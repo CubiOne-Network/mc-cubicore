@@ -5,12 +5,10 @@ import net.filtastisch.cubiCore.CubiCore;
 import java.sql.*;
 
 /**
- * Data Access Object (DAO) für globale Einstellungen.
+ * Data Access Object for global settings.
  * <p>
- * Diese Klasse verwaltet den Datenbankzugriff für die globalen Einstellungen
- * des CubiCore-Plugins. Sie bietet Methoden zum Erstellen der Tabelle und
- * zum Laden von Einstellungen aus der Datenbank.
- * </p>
+ * Handles database access for global settings of the CubiCore plugin.
+ * Provides methods for table creation and loading settings from the database.
  *
  * @author filtastisch
  * @version 1.0
@@ -19,21 +17,20 @@ import java.sql.*;
 public class GlobalSettingsDao {
 
     /**
-     * Die Instanz des CubiCore-Plugins für den Zugriff auf Konfiguration und Datenbank.
+     * CubiCore plugin instance for accessing configuration and database.
      */
     private final CubiCore cubiCore = CubiCore.getInstance();
 
     /**
-     * Erstellt die Tabelle für globale Einstellungen, falls sie nicht existiert.
+     * Creates the global settings table if it doesn't exist.
      * <p>
-     * Die Tabelle enthält folgende Spalten:
+     * Table columns:
      * <ul>
-     *     <li>{@code setting_name} - Der Name der Einstellung (Primärschlüssel)</li>
-     *     <li>{@code value} - Der Wert der Einstellung</li>
-     *     <li>{@code last_edited} - Zeitstempel der letzten Änderung (automatisch aktualisiert)</li>
+     *     <li>{@code setting_name} - Setting name (primary key)</li>
+     *     <li>{@code value} - Setting value</li>
+     *     <li>{@code last_edited} - Timestamp of last modification (auto-updated)</li>
      * </ul>
-     * Zusätzlich wird ein Standardeintrag für das Chat-Präfix eingefügt.
-     * </p>
+     * Also inserts a default entry for the chat prefix.
      */
     public void createTable() {
         String prefix = cubiCore.getConfigWrapper().getDbTablePrefix();
@@ -59,11 +56,11 @@ public class GlobalSettingsDao {
     }
 
     /**
-     * Lädt eine globale Einstellung aus der Datenbank.
+     * Loads a global setting from the database.
      *
-     * @param key der Schlüssel/Name der Einstellung, die geladen werden soll
-     * @return der Wert der Einstellung oder {@code null}, wenn die Einstellung nicht existiert
-     * @throws RuntimeException wenn ein Datenbankfehler auftritt
+     * @param key the key/name of the setting to load
+     * @return the setting value, or {@code null} if the setting doesn't exist
+     * @throws RuntimeException if a database error occurs
      */
     public String loadGlobalSetting(String key) {
         String sql = "SELECT * FROM " +

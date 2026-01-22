@@ -3,6 +3,7 @@ package net.filtastisch.cubiCore.utils;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -30,38 +31,40 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * ItemBuilder für Minecraft 1.21.1 mit Kyori Adventure API
+ * ItemBuilder for Minecraft 1.21.1 with Kyori Adventure API.
  *
- * Beispiel-Verwendung:
+ * <p>Example usage:</p>
+ * <pre>{@code
  * ItemStack item = new ItemBuilder(Material.DIAMOND_SWORD)
- *     .setDisplayName("§6Legendäres Schwert")
- *     .setLore("§7Eine mächtige Waffe", "§7für tapfere Krieger")
+ *     .setDisplayName("§6Legendary Sword")
+ *     .setLore("§7A powerful weapon", "§7for brave warriors")
  *     .addEnchantment(Enchantment.SHARPNESS, 5)
  *     .setUnbreakable(true)
  *     .build();
  *
- * Oder mit MiniMessage:
+ * // Or with MiniMessage:
  * ItemStack item = new ItemBuilder(Material.DIAMOND_SWORD)
- *     .setDisplayName("<gradient:#FF0000:#00FF00>Regenbogen Schwert</gradient>", SerializerType.MINI_MESSAGE)
+ *     .setDisplayName("<gradient:#FF0000:#00FF00>Rainbow Sword</gradient>", SerializerType.MINI_MESSAGE)
  *     .build();
+ * }</pre>
  */
 public class ItemBuilder {
 
-    private final ItemStack item;
+    private ItemStack item;
     private final ItemMeta meta;
 
     /**
-     * Erstellt einen neuen ItemBuilder
-     * @param material Das Material des Items
+     * Creates a new ItemBuilder.
+     * @param material the item material
      */
     public ItemBuilder(Material material) {
         this(material, 1);
     }
 
     /**
-     * Erstellt einen neuen ItemBuilder mit Anzahl
-     * @param material Das Material des Items
-     * @param amount Die Anzahl der Items
+     * Creates a new ItemBuilder with amount.
+     * @param material the item material
+     * @param amount the item amount
      */
     public ItemBuilder(Material material, int amount) {
         this.item = new ItemStack(material, amount);
@@ -69,28 +72,33 @@ public class ItemBuilder {
     }
 
     /**
-     * Erstellt einen ItemBuilder von einem existierenden ItemStack
-     * @param item Das ItemStack zum Kopieren
+     * Creates an ItemBuilder from an existing ItemStack.
+     * @param item the ItemStack to copy
      */
     public ItemBuilder(ItemStack item) {
         this.item = item.clone();
         this.meta = this.item.getItemMeta();
     }
 
+    public ItemBuilder withType(Material material) {
+        this.item = this.item.withType(material);
+        return this;
+    }
+
     /**
-     * Setzt den Anzeigenamen des Items (Standard: Legacy mit §)
-     * @param name Der Name (unterstützt § Farbcodes)
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the display name (default: Legacy with §).
+     * @param name the name (supports § color codes)
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setDisplayName(String name) {
         return setDisplayName(name, SerializerType.LEGACY_SECTION);
     }
 
     /**
-     * Setzt den Anzeigenamen des Items mit bestimmtem Format-Typ
-     * @param name Der Name als String
-     * @param SerializerType Der {@link SerializerType} für die Formatierung
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the display name with a specific format type.
+     * @param name the name string
+     * @param SerializerType the {@link SerializerType} for formatting
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setDisplayName(String name, SerializerType SerializerType) {
         if (meta != null && name != null) {
@@ -101,10 +109,10 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt den Anzeigenamen des Items mit benutzerdefiniertem Legacy-Zeichen
-     * @param name Der Name mit Farbcodes
-     * @param sectionChar Das Zeichen für Farbcodes (z.B. '§' oder '&')
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the display name with a custom legacy character.
+     * @param name the name with color codes
+     * @param sectionChar the color code character (e.g. '§' or '&')
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setDisplayName(String name, char sectionChar) {
         if (meta != null && name != null) {
@@ -115,9 +123,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt den Anzeigenamen des Items als Component
-     * @param name Der Name als {@link Component}
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the display name as Component.
+     * @param name the name as {@link Component}
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setDisplayName(Component name) {
         if (meta != null && name != null) {
@@ -127,19 +135,19 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt die Lore (Beschreibung) des Items (Standard: Legacy mit §)
-     * @param lore Die Lore-Zeilen
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the lore (default: Legacy with §).
+     * @param lore the lore lines
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setLore(String... lore) {
         return setLore(SerializerType.LEGACY_SECTION, lore);
     }
 
     /**
-     * Setzt die Lore mit bestimmtem Format-Typ
-     * @param SerializerType Der {@link SerializerType} für die Formatierung
-     * @param lore Die Lore-Zeilen
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the lore with a specific format type.
+     * @param SerializerType the {@link SerializerType} for formatting
+     * @param lore the lore lines
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setLore(SerializerType SerializerType, String... lore) {
         if (meta != null && lore != null) {
@@ -152,19 +160,19 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt die Lore als String-Liste (Standard: Legacy mit §)
-     * @param lore Die Lore-Liste
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the lore as string list (default: Legacy with §).
+     * @param lore the lore list
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setLore(List<String> lore) {
         return setLore(lore, SerializerType.LEGACY_SECTION);
     }
 
     /**
-     * Setzt die Lore als String-Liste mit bestimmtem Format-Typ
-     * @param lore Die Lore-Liste
-     * @param SerializerType Der {@link SerializerType} für die Formatierung
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the lore as string list with a specific format type.
+     * @param lore the lore list
+     * @param SerializerType the {@link SerializerType} for formatting
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setLore(List<String> lore, SerializerType SerializerType) {
         if (meta != null && lore != null) {
@@ -177,9 +185,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt die Lore als Component-Liste
-     * @param lore Die Lore als {@link Component} Liste
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the lore as Component list.
+     * @param lore the lore as {@link Component} list
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setLoreComponents(List<Component> lore) {
         if (meta != null && lore != null) {
@@ -189,19 +197,19 @@ public class ItemBuilder {
     }
 
     /**
-     * Fügt Lore-Zeilen hinzu (Standard: Legacy mit §)
-     * @param lore Die hinzuzufügenden Zeilen
-     * @return Der ItemBuilder für Method Chaining
+     * Adds lore lines (default: Legacy with §).
+     * @param lore the lines to add
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder addLore(String... lore) {
         return addLore(SerializerType.LEGACY_SECTION, lore);
     }
 
     /**
-     * Fügt Lore-Zeilen mit bestimmtem Format-Typ hinzu
-     * @param SerializerType Der {@link SerializerType} für die Formatierung
-     * @param lore Die hinzuzufügenden Zeilen
-     * @return Der ItemBuilder für Method Chaining
+     * Adds lore lines with a specific format type.
+     * @param SerializerType the {@link SerializerType} for formatting
+     * @param lore the lines to add
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder addLore(SerializerType SerializerType, String... lore) {
         if (meta != null && lore != null) {
@@ -217,9 +225,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Fügt eine Lore-Zeile als Component hinzu
-     * @param loreLine Die hinzuzufügende Zeile als {@link Component}
-     * @return Der ItemBuilder für Method Chaining
+     * Adds a lore line as Component.
+     * @param loreLine the line to add as {@link Component}
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder addLore(Component loreLine) {
         if (meta != null && loreLine != null) {
@@ -231,25 +239,19 @@ public class ItemBuilder {
         return this;
     }
 
-    /**
-     * Hilfsmethode zum Parsen von Strings zu Components
-     * @param text Der zu parsende Text
-     * @param SerializerType Der Text-Typ
-     * @return Die geparste Component
-     */
     private Component parseComponent(String text, SerializerType SerializerType) {
         return switch (SerializerType) {
-            case MINI_MESSAGE -> MiniMessage.miniMessage().deserialize(text);
-            case LEGACY_AMPERSAND -> LegacyComponentSerializer.legacyAmpersand().deserialize(text);
-            case LEGACY_SECTION -> LegacyComponentSerializer.legacySection().deserialize(text);
-            case PLAIN -> Component.text(text);
+            case MINI_MESSAGE -> MiniMessage.miniMessage().deserialize(text).decoration(TextDecoration.ITALIC, false);
+            case LEGACY_AMPERSAND -> LegacyComponentSerializer.legacyAmpersand().deserialize(text).decoration(TextDecoration.ITALIC, false);
+            case LEGACY_SECTION -> LegacyComponentSerializer.legacySection().deserialize(text).decoration(TextDecoration.ITALIC, false);
+            case PLAIN -> Component.text(text).decoration(TextDecoration.ITALIC, false);
         };
     }
 
     /**
-     * Setzt die Anzahl der Items
-     * @param amount Die Anzahl
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the item amount.
+     * @param amount the amount
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setAmount(int amount) {
         item.setAmount(amount);
@@ -257,10 +259,10 @@ public class ItemBuilder {
     }
 
     /**
-     * Fügt eine Verzauberung hinzu
-     * @param enchantment Die Verzauberung
-     * @param level Das Level
-     * @return Der ItemBuilder für Method Chaining
+     * Adds an enchantment.
+     * @param enchantment the enchantment
+     * @param level the level
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder addEnchantment(Enchantment enchantment, int level) {
         if (meta != null) {
@@ -270,9 +272,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Entfernt eine Verzauberung
-     * @param enchantment Die zu entfernende Verzauberung
-     * @return Der ItemBuilder für Method Chaining
+     * Removes an enchantment.
+     * @param enchantment the enchantment to remove
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder removeEnchantment(Enchantment enchantment) {
         if (meta != null) {
@@ -282,9 +284,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Fügt ItemFlags hinzu (versteckt z.B. Verzauberungen)
-     * @param flags Die ItemFlags
-     * @return Der ItemBuilder für Method Chaining
+     * Adds ItemFlags (hides e.g. enchantments).
+     * @param flags the ItemFlags
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder addItemFlags(ItemFlag... flags) {
         if (meta != null) {
@@ -294,9 +296,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Entfernt ItemFlags
-     * @param flags Die zu entfernenden ItemFlags
-     * @return Der ItemBuilder für Method Chaining
+     * Removes ItemFlags.
+     * @param flags the ItemFlags to remove
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder removeItemFlags(ItemFlag... flags) {
         if (meta != null) {
@@ -306,9 +308,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt das Item als unzerstörbar
-     * @param unbreakable Ob das Item unzerstörbar sein soll
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the item as unbreakable.
+     * @param unbreakable whether the item should be unbreakable
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setUnbreakable(boolean unbreakable) {
         if (meta != null) {
@@ -318,9 +320,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt den Custom Model Data Wert (für Resource Packs)
-     * @param data Der Custom Model Data Wert
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the Custom Model Data value (for resource packs).
+     * @param data the Custom Model Data value
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setCustomModelData(int data) {
         if (meta != null) {
@@ -330,10 +332,10 @@ public class ItemBuilder {
     }
 
     /**
-     * Fügt einen Attribut-Modifier hinzu (z.B. +5 Attack Damage)
-     * @param attribute Das Attribut
-     * @param modifier Der Modifier
-     * @return Der ItemBuilder für Method Chaining
+     * Adds an attribute modifier (e.g. +5 Attack Damage).
+     * @param attribute the attribute
+     * @param modifier the modifier
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier) {
         if (meta != null) {
@@ -343,13 +345,13 @@ public class ItemBuilder {
     }
 
     /**
-     * Fügt einen Attribut-Modifier mit einfachen Parametern hinzu (1.21+ kompatibel)
-     * @param attribute Das Attribut
-     * @param name Der Name des Modifiers
-     * @param amount Der Wert
-     * @param operation Die Operation (ADD_NUMBER, ADD_SCALAR, MULTIPLY_SCALAR_1)
-     * @param slot Der Equipment Slot
-     * @return Der ItemBuilder für Method Chaining
+     * Adds an attribute modifier with simple parameters (1.21+ compatible).
+     * @param attribute the attribute
+     * @param name the modifier name
+     * @param amount the value
+     * @param operation the operation (ADD_NUMBER, ADD_SCALAR, MULTIPLY_SCALAR_1)
+     * @param slot the equipment slot
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder addAttributeModifier(Attribute attribute, String name, double amount,
                                             AttributeModifier.Operation operation, EquipmentSlot slot) {
@@ -364,9 +366,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt den Schaden des Items (für Damageable Items)
-     * @param damage Der Schadenswert
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the item damage (for Damageable items).
+     * @param damage the damage value
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setDamage(int damage) {
         if (meta instanceof Damageable) {
@@ -376,10 +378,10 @@ public class ItemBuilder {
     }
 
     /**
-     * Fügt Armor Trim hinzu (1.20+)
-     * @param pattern Das Trim Pattern
-     * @param material Das Trim Material
-     * @return Der ItemBuilder für Method Chaining
+     * Adds Armor Trim (1.20+).
+     * @param pattern the trim pattern
+     * @param material the trim material
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setArmorTrim(TrimPattern pattern, TrimMaterial material) {
         if (meta instanceof org.bukkit.inventory.meta.ArmorMeta) {
@@ -390,11 +392,11 @@ public class ItemBuilder {
     }
 
     /**
-     * Speichert Custom Data im PersistentDataContainer
-     * @param key Der NamespacedKey
-     * @param type Der PersistentDataType
-     * @param value Der Wert
-     * @return Der ItemBuilder für Method Chaining
+     * Stores custom data in PersistentDataContainer.
+     * @param key the NamespacedKey
+     * @param type the PersistentDataType
+     * @param value the value
+     * @return this ItemBuilder for method chaining
      */
     public <T, Z> ItemBuilder setPersistentData(NamespacedKey key, PersistentDataType<T, Z> type, Z value) {
         if (meta != null) {
@@ -404,9 +406,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt die maximale Stack-Größe (1.21+)
-     * @param maxStackSize Die maximale Stack-Größe
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the max stack size (1.21+).
+     * @param maxStackSize the max stack size
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setMaxStackSize(int maxStackSize) {
         if (meta != null) {
@@ -416,8 +418,8 @@ public class ItemBuilder {
     }
 
     /**
-     * Macht das Item zu einem Glowing Item (leuchtender Effekt ohne Verzauberung)
-     * @return Der ItemBuilder für Method Chaining
+     * Makes the item glow (glowing effect without enchantment).
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setGlowing() {
         if (meta != null) {
@@ -428,8 +430,8 @@ public class ItemBuilder {
     }
 
     /**
-     * Versteckt alle Item-Informationen
-     * @return Der ItemBuilder für Method Chaining
+     * Hides all item information flags.
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder hideAllFlags() {
         if (meta != null) {
@@ -439,9 +441,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt den Skull-Owner nach Spielername (nur für PLAYER_HEAD)
-     * @param ownerName Der Spielername
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the skull owner by player name (PLAYER_HEAD only).
+     * @param ownerName the player name
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setSkullOwner(String ownerName) {
         if (meta instanceof SkullMeta) {
@@ -453,9 +455,9 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt den Skull-Owner nach UUID (nur für PLAYER_HEAD)
-     * @param uuid Die UUID des Spielers
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the skull owner by UUID (PLAYER_HEAD only).
+     * @param uuid the player UUID
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setSkullOwner(UUID uuid) {
         if (meta instanceof SkullMeta) {
@@ -467,10 +469,10 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt die Skull-Textur mit Base64 (nur für PLAYER_HEAD)
-     * Verwendet das Paper API für Custom Textures
-     * @param base64Texture Die Base64-kodierte Textur
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the skull texture with Base64 (PLAYER_HEAD only).
+     * Uses Paper API for custom textures.
+     * @param base64Texture the Base64-encoded texture
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setSkullTexture(String base64Texture) {
         if (meta instanceof SkullMeta) {
@@ -483,10 +485,10 @@ public class ItemBuilder {
     }
 
     /**
-     * Setzt die Skull-Textur mit Base64 und einer Custom UUID (nur für PLAYER_HEAD)
-     * @param uuid Die UUID für das Profil
-     * @param base64Texture Die Base64-kodierte Textur
-     * @return Der ItemBuilder für Method Chaining
+     * Sets the skull texture with Base64 and custom UUID (PLAYER_HEAD only).
+     * @param uuid the profile UUID
+     * @param base64Texture the Base64-encoded texture
+     * @return this ItemBuilder for method chaining
      */
     public ItemBuilder setSkullTexture(UUID uuid, String base64Texture) {
         if (meta instanceof SkullMeta) {
@@ -499,8 +501,8 @@ public class ItemBuilder {
     }
 
     /**
-     * Baut das finale ItemStack
-     * @return Das fertige ItemStack
+     * Builds the final ItemStack.
+     * @return the built ItemStack
      */
     public ItemStack build() {
         if (meta != null) {
@@ -510,16 +512,16 @@ public class ItemBuilder {
     }
 
     /**
-     * Gibt das ItemMeta zurück (für erweiterte Anpassungen)
-     * @return Das ItemMeta
+     * Returns the ItemMeta (for advanced customization).
+     * @return the ItemMeta
      */
     public ItemMeta getMeta() {
         return meta;
     }
 
     /**
-     * Gibt das aktuelle ItemStack zurück (ohne zu bauen)
-     * @return Das ItemStack
+     * Returns the current ItemStack (without building).
+     * @return the ItemStack
      */
     public ItemStack getItem() {
         return item;

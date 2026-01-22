@@ -8,72 +8,130 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.BiConsumer;
 
 /**
- * Repräsentiert einen klickbaren Button in einer {@link GUI}.
+ * Represents a clickable button in a {@link GUI}.
  * <p>
- * Ein GUIButton besteht aus einem {@link ItemStack} als visuelle Darstellung
- * und einem optionalen Click-Listener für die Behandlung von Klick-Events.
- * </p>
+ * A GUIButton consists of an {@link ItemStack} as visual representation,
+ * an optional click listener for handling click events, and a flag
+ * determining whether clicks on this button should be cancelled.
  *
- * <p><b>Beispiel:</b></p>
+ * <p><b>Example:</b></p>
  * <pre>{@code
- * GUIButton button = new GUIButton(new ItemStack(Material.DIAMOND))
+ * // Button with click cancel (default)
+ * GUIButton button1 = new GUIButton(new ItemStack(Material.DIAMOND))
  *     .withListener((event, player) -> {
- *         player.sendMessage("Du hast den Diamant geklickt!");
+ *         player.sendMessage("You clicked the diamond!");
  *     });
+ *
+ * // Button without click cancel
+ * GUIButton button2 = new GUIButton(new ItemStack(Material.CHEST))
+ *     .withListener((event, player) -> {
+ *         player.sendMessage("Items can be moved!");
+ *     }, false);
  * }</pre>
  *
  * @author filtastisch
- * @version 1.0
+ * @version 2.0
  * @since 1.0
  * @see GUI
  */
 public class GUIButton {
 
     /**
-     * Das ItemStack, das als Icon für diesen Button angezeigt wird.
+     * ItemStack displayed as the button icon.
      */
     @Getter
     private final ItemStack icon;
 
     /**
-     * Der optionale Listener, der bei Klicks auf diesen Button ausgeführt wird.
+     * Optional listener executed when this button is clicked.
      */
     @Getter
     private BiConsumer<InventoryClickEvent, Player> clickListener;
 
     /**
-     * Erstellt einen neuen GUIButton mit dem angegebenen Icon.
+     * Whether clicks on this button should be cancelled. Default is {@code true}.
+     */
+    @Getter
+    private boolean cancelClick = true;
+
+    /**
+     * Whether this button should persist during GUI updates or page changes. Default is {@code false}.
+     */
+    @Getter
+    private boolean sticky = false;
+
+    /**
+     * Creates a new GUIButton with the specified icon.
      *
-     * @param icon der {@link ItemStack}, der als Button-Icon angezeigt wird
+     * @param icon the {@link ItemStack} displayed as button icon
      */
     public GUIButton(ItemStack icon){
         this.icon = icon;
     }
 
     /**
-     * Fügt einen Click-Listener zum Button hinzu.
+     * Adds a click listener to the button.
      * <p>
-     * Der Listener erhält das {@link InventoryClickEvent} und den {@link Player},
-     * der geklickt hat.
-     * </p>
+     * The listener receives the {@link InventoryClickEvent} and the {@link Player}
+     * who clicked. Clicks are cancelled by default.
      *
-     * @param clickListener der {@link BiConsumer}, der bei Klicks ausgeführt wird
-     * @return diese GUIButton-Instanz für Method-Chaining
+     * @param clickListener the {@link BiConsumer} executed on click
+     * @return this GUIButton instance for method chaining
      */
     public GUIButton withListener(BiConsumer<InventoryClickEvent, Player> clickListener) {
         this.clickListener = clickListener;
+        this.cancelClick = true;
         return this;
     }
 
     /**
-     * Führt den Click-Listener aus, wenn vorhanden.
+     * Adds a click listener with configurable cancel behavior.
      * <p>
-     * Diese Methode wird von der {@link GUI} aufgerufen, wenn ein Spieler
-     * auf diesen Button klickt.
-     * </p>
+     * The listener receives the {@link InventoryClickEvent} and the {@link Player}
+     * who clicked.
      *
-     * @param event  das {@link InventoryClickEvent}
-     * @param player der {@link Player}, der geklickt hat
+     * @param clickListener the {@link BiConsumer} executed on click
+     * @param cancelClick {@code true} to cancel the click, {@code false} otherwise
+     * @return this GUIButton instance for method chaining
+     */
+    public GUIButton withListener(BiConsumer<InventoryClickEvent, Player> clickListener, boolean cancelClick) {
+        this.clickListener = clickListener;
+        this.cancelClick = cancelClick;
+        return this;
+    }
+
+    /**
+     * Sets whether clicks on this button should be cancelled.
+     *
+     * @param cancelClick {@code true} to cancel clicks, {@code false} otherwise
+     * @return this GUIButton instance for method chaining
+     */
+    public GUIButton setCancelClick(boolean cancelClick) {
+        this.cancelClick = cancelClick;
+        return this;
+    }
+
+    /**
+     * Sets whether this button should persist during GUI updates or page changes.
+     * <p>
+     * Sticky buttons are not removed or overwritten during {@link PageableGUI#nextPage()},
+     * {@link PageableGUI#previousPage()}, and {@link GUI#updateGui}.
+     *
+     * @param sticky {@code true} to persist the button, {@code false} otherwise
+     * @return this GUIButton instance for method chaining
+     */
+    public GUIButton setSticky(boolean sticky) {
+        this.sticky = sticky;
+        return this;
+    }
+
+    /**
+     * Executes the click listener if present.
+     * <p>
+     * Called by {@link GUI} when a player clicks on this button.
+     *
+     * @param event  the {@link InventoryClickEvent}
+     * @param player the {@link Player} who clicked
      */
     public void onClick(InventoryClickEvent event, Player player) {
         if (clickListener != null) {
@@ -82,12 +140,11 @@ public class GUIButton {
     }
 
     /**
-     * Prüft, ob dieser Button einen Click-Listener hat.
+     * Checks if this button has a click listener.
      *
-     * @return {@code true}, wenn ein Listener registriert ist, sonst {@code false}
+     * @return {@code true} if a listener is registered, {@code false} otherwise
      */
     public boolean hasListener() {
         return clickListener != null;
     }
-
 }

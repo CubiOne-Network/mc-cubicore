@@ -5,19 +5,17 @@ import lombok.Getter;
 import java.util.Map;
 
 /**
- * Konfigurationsklasse für GUI-Toolbars.
+ * Configuration class for GUI toolbars.
  * <p>
- * Eine ToolbarConfig definiert eine Reihe in einer {@link GUI}, die als
- * Toolbar verwendet wird. Die Toolbar enthält Buttons, die typischerweise
- * für Navigation, Aktionen oder andere häufig verwendete Funktionen genutzt werden.
- * </p>
+ * Defines a row in a {@link GUI} to be used as toolbar. The toolbar contains
+ * buttons typically used for navigation, actions, or other common functions.
  *
- * <p><b>Beispiel:</b></p>
+ * <p><b>Example:</b></p>
  * <pre>{@code
  * Map<Integer, GUIButton> buttons = new HashMap<>();
  * buttons.put(4, new GUIButton(closeIcon).withListener((e, p) -> p.closeInventory()));
  *
- * ToolbarConfig toolbar = new ToolbarConfig(5, buttons); // Toolbar in Reihe 6 (0-basiert)
+ * ToolbarConfig toolbar = new ToolbarConfig(5, buttons); // Toolbar in row 6 (0-indexed)
  * gui.withToolbar(toolbar);
  * }</pre>
  *
@@ -30,21 +28,21 @@ import java.util.Map;
 public class ToolbarConfig {
 
     /**
-     * Die Reihe, in der die Toolbar angezeigt wird (0-basiert).
+     * Row where the toolbar is displayed (0-indexed).
      */
     @Getter
     private final int toolbarRow;
 
     /**
-     * Eine Map der Toolbar-Buttons, indiziert nach Position (0-8).
+     * Map of toolbar buttons indexed by position (0-8).
      */
     private final Map<Integer, GUIButton> toolbarButtons;
 
     /**
-     * Erstellt eine neue ToolbarConfig.
+     * Creates a new ToolbarConfig.
      *
-     * @param toolbarRow     die Reihe, in der die Toolbar platziert wird (0-basiert)
-     * @param toolbarButtons eine Map der initialen Toolbar-Buttons
+     * @param toolbarRow     the row where the toolbar is placed (0-indexed)
+     * @param toolbarButtons map of initial toolbar buttons
      */
     public ToolbarConfig(int toolbarRow, Map<Integer, GUIButton> toolbarButtons) {
         this.toolbarRow = toolbarRow;
@@ -52,12 +50,12 @@ public class ToolbarConfig {
     }
 
     /**
-     * Setzt einen Button an der angegebenen Position in der Toolbar.
+     * Sets a button at the specified toolbar position.
      *
-     * @param pos    die Position in der Toolbar (0-8)
-     * @param button der zu platzierende {@link GUIButton}
-     * @return diese ToolbarConfig-Instanz für Method-Chaining
-     * @throws IllegalArgumentException wenn die Position außerhalb des Bereichs 0-8 liegt
+     * @param pos    the position in the toolbar (0-8)
+     * @param button the {@link GUIButton} to place
+     * @return this ToolbarConfig instance for method chaining
+     * @throws IllegalArgumentException if position is outside range 0-8
      */
     public ToolbarConfig setButton(int pos, GUIButton button) {
         if (pos < 0 || pos > 8) {
@@ -68,10 +66,10 @@ public class ToolbarConfig {
     }
 
     /**
-     * Gibt den Button an der angegebenen Position zurück.
+     * Returns the button at the specified position.
      *
-     * @param pos die Position in der Toolbar (0-8)
-     * @return der {@link GUIButton} an der Position oder {@code null}, wenn kein Button vorhanden ist
+     * @param pos the position in the toolbar (0-8)
+     * @return the {@link GUIButton} at that position, or {@code null} if empty
      */
     public GUIButton getButton(int pos) {
         return toolbarButtons.get(pos);

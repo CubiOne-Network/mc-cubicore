@@ -3,27 +3,28 @@ package net.filtastisch.cubiCore.utils;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 /**
- * Enumeration der unterstützten Serializer-Formate.
+ * Enumeration of supported serializer formats.
  */
 public enum SerializerType {
     /**
-     * MiniMessage-Format für moderne Text-Formatierung.
+     * MiniMessage format for modern text formatting.
      *
      * @see MiniMessage
      */
     MINI_MESSAGE,
 
     /**
-     * Legacy-Format mit '&' als Farbcode-Zeichen.
+     * Legacy format with '&' as color code character.
      */
     LEGACY_AMPERSAND,
 
     /**
-     * Legacy-Format mit '§' als Farbcode-Zeichen.
+     * Legacy format with '§' as color code character.
      */
     LEGACY_SECTION,
+
     /**
-     * Einfacher Text ohne Formatierung.
+     * Plain text without formatting.
      */
     PLAIN
 }
