@@ -14,7 +14,7 @@ package net.filtastisch.cubiCore.utils;
  * @author filtastisch
  * @version 1.0
  * @since 1.0
- * @see net.filtastisch.cubiCore.CubiCore#getGlobalSettings()
+ * @see net.filtastisch.cubiCore.CubiCore#globalSettings
  */
 public class GlobalSettings {
 

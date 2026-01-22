@@ -14,7 +14,7 @@ public enum SerializerType {
     MINI_MESSAGE,
 
     /**
-     * Legacy format with '&' as color code character.
+     * Legacy format with '&amp;' as color code character.
      */
     LEGACY_AMPERSAND,
 

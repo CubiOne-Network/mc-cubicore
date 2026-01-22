@@ -261,7 +261,7 @@ public class GUI implements Listener {
      * <p>
      * Replaces all existing buttons with the specified new buttons.
      * Slots not in the map will be cleared.
-     * Sticky buttons ({@link GUIButton#isSticky()}) are preserved
+     * Sticky buttons ({@link GUIButton#sticky}) are preserved
      * unless the new button is also sticky.
      *
      * @param newButtons map of new buttons (slot -> GUIButton)
@@ -441,7 +441,7 @@ public class GUI implements Listener {
          * Sets the GUI title with a custom legacy character.
          *
          * @param title       the title string with color codes
-         * @param sectionChar the character for color codes (e.g. '§' or '&')
+         * @param sectionChar the character for color codes (e.g. '§' or '&amp;')
          * @return this Builder instance for method chaining
          */
         public Builder setTitle(String title, char sectionChar) {
